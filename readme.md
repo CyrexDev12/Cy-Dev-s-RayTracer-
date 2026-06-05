@@ -1,7 +1,10 @@
 Notes: 
 
 Compile Command 
-g++ -std=c++11 main.cpp Matrix.cpp -o program
+mingw32-make
+
+Clean Command: 
+mingw32-make clean 
 
 
 - Tuple: A point like (-4, 4, 3)
