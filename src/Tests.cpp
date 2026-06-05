@@ -1,0 +1,505 @@
+#include "Tests.h"
+#define M_PI       3.14159265358979323846   // pi
+#include <cmath>
+#include <fstream>
+#include "Intersection.h"
+#include "Ray.h"
+#include "Sphere.h"
+#include <cassert>
+#include "LightShadeVector.h"
+#include "Lighting.h"
+#include "PointLight.h"
+using namespace std; 
+
+
+
+bool almostEqual(double a, double b) {
+    return fabs(a - b) < 0.00001;
+}
+
+// Helper Function 
+bool tupleEqual(const vector<double>& a, const vector<double>& b) {
+    if (a.size() != b.size()) return false;
+
+    for (int i = 0; i < a.size(); i++) {
+        if (!almostEqual(a[i], b[i])) return false;
+    }
+
+    return true;
+}
+
+/*
+
+// SHEARING TRANSFORMATION TEST 
+// Status: Test passeed 
+void runShearingTest(string testName, Matrix transform, vector<double> p, vector<double> expected) {
+    vector<double> result = transform.multiplyTuple(p);
+
+    cout << testName << ": ";
+
+    if (tupleEqual(result, expected)) {
+        cout << "PASS";
+    } else {
+        cout << "FAIL - got ";
+        for (double value : result) {
+            cout << value << " ";
+        }
+    }
+
+    cout << endl;
+}
+
+// Write projectile Motion Test 
+// Status: Passed 
+/* void ppmTest() {
+    vector<double> initPos = {0.0, 0.0};    // meters (or units)
+    vector<double> velocity = {8.0, 15.0};  // initial v (vx, vy)
+
+    double gravity = -9.8;   // downward
+    double wind    = 0.0;    // no horizontal accel
+    double dt      = 0.05;   // smaller dt → smoother arc
+
+    Projectile myProj(initPos, velocity, gravity, wind, dt);
+
+    Canvas myCanvas(800, 300);   // wider than tall
+
+    // red color
+    vector<double> redColVec = {255, 100, 100};
+    Color Red = makeColor(redColVec);
+
+    // map physics units → pixels
+    const double scaleX = 10.0;  // 1 unit = 10 pixels horizontally
+    const double scaleY = 10.0;  // 1 unit = 10 pixels vertically
+
+    vector<double> currPos = initPos;
+
+    while (currPos[1] >= 0.0) {  // stop when projectile hits the "ground"
+        // world → canvas coords
+        int canvasX = static_cast<int>(currPos[0] * scaleX);
+        int canvasY = myCanvas.height - 1 - static_cast<int>(currPos[1] * scaleY);
+
+        if (canvasX >= 0 && canvasX < myCanvas.width &&
+            canvasY >= 0 && canvasY < myCanvas.height) {
+            myCanvas.writePixel(canvasX, canvasY, Red);
+        }
+
+        currPos = myProj.Tick();
+    }
+
+    // write out PPM
+    std::string ppm = myCanvas.convertToPpm();
+    std::ofstream out("projectile.ppm");
+    out << ppm;
+    out.close();
+} 
+
+
+// Chaining Matrix Translation Test 
+// Status Passed 
+void chainingMatrixTransTest() {
+    Matrix transform;
+
+Matrix A = transform.rotateX(M_PI / 2);
+Matrix B = transform.scale(5, 5, 5);
+Matrix C = transform.translation(10, 5, 7);
+
+// Chain: C * B * A
+Matrix chain = C.multiplyMatrix(B).multiplyMatrix(A);
+
+vector<double> p = {1, 0, 1, 1};
+
+vector<double> result = chain.multiplyTuple(p);
+
+for (double val : result) {
+    cout << round(val * 100000) / 100000 << " ";
+}
+
+}
+
+
+// Represent points as homogeneous coordinates: (x, y, z, w)
+// The clock lies flat in the XY plane, so z = 0.
+// To spin points around the center of the clock, rotate around the Z axis.
+// For Every Hour 
+// Matrix rotation = Matrix::rotateZ(angle * hour);
+// vector<double> rotated = rotation.multiplyTuple(point);
+// Then we convert from math coordinates to canvas pixels 
+// int x = canvasWidth / 2 + rotated[0] * radius;
+// int y = canvasHeight / 2 + rotated[1] * radius;
+
+// White rgb(255, 255, 255)
+void AnalogClockPPM() {
+    Canvas canvas(500, 500);
+
+    vector<double> whiteColorVec = {255, 255, 255};
+    Color white = makeColor(whiteColorVec);
+
+    double radius = 200.0;
+    double angleStep = M_PI / 6.0;
+
+    vector<double> pt = {0, -1, 0, 1};
+
+    for (int hour = 0; hour < 12; hour++) {
+        Matrix transform;
+        Matrix rm = transform.rotateZ(angleStep * hour);
+
+        vector<double> rotated = rm.multiplyTuple(pt);
+
+        int x = static_cast<int>(canvas.width / 2 + rotated[0] * radius);
+        int y = static_cast<int>(canvas.height / 2 + rotated[1] * radius);
+
+        canvas.writePixel(x, y, white);
+    }
+
+    ofstream out("analogClock.ppm");
+
+    if (!out) {
+        cerr << "Could not create analogClock.ppm" << endl;
+        return;
+    }
+
+    out << canvas.convertToPpm();
+}
+
+
+
+// Ray Transform Tests
+
+void runRayTransformTests() {
+    Matrix transform;
+
+    Ray r = {
+        {1, 2, 3, 1},
+        {0, 1, 0, 0}
+    };
+
+    Matrix translationMatrix = transform.translation(3, 4, 5);
+    Ray translatedRay = r.transform(translationMatrix);
+
+    cout << "Translating a ray: ";
+
+    if (
+        tupleEqual(translatedRay.origin, {4, 6, 8, 1}) &&
+        tupleEqual(translatedRay.direction, {0, 1, 0, 0})
+    ) {
+        cout << "PASS";
+    } else {
+        cout << "FAIL";
+    }
+
+    cout << endl;
+
+    Matrix scaleMatrix = transform.scale(2, 3, 4);
+    Ray scaledRay = r.transform(scaleMatrix);
+
+    cout << "Scaling a ray: ";
+
+    if (
+        tupleEqual(scaledRay.origin, {2, 6, 12, 1}) &&
+        tupleEqual(scaledRay.direction, {0, 3, 0, 0})
+    ) {
+        cout << "PASS";
+    } else {
+        cout << "FAIL";
+    }
+
+    cout << endl;
+}
+
+void SphereIntersectionTest() {
+    Sphere s;
+    Ray r = {
+        {0, 0, 5, 1},
+        {0, 0, 1, 0}
+    };
+
+    vector<double> intersections = s.intersect(r);
+
+    cout << "Intersecting a ray with a sphere: ";
+
+    if (intersections.size() == 2 &&
+        almostEqual(intersections[0], -6.0) &&
+        almostEqual(intersections[1], -4.0)) {
+        cout << "PASS";
+    } else {
+        cout << "FAIL";
+    }
+
+    cout << endl;
+}
+
+
+ void hitTest() {
+    Intersections intersections;
+    intersections.addIntersection(Intersection(1.0, nullptr));
+    intersections.addIntersection(Intersection(2.0, nullptr));
+    intersections.addIntersection(Intersection(-1.0, nullptr));
+
+    double hitT = intersections.hit();
+
+    cout << "Testing hit function: ";
+
+    if (almostEqual(hitT, 1.0)) {
+        cout << "PASS";
+    } else {
+        cout << "FAIL - got " << hitT;
+    }
+
+    cout << endl;
+} 
+
+
+
+void TranslateRay() {
+        Ray r = {
+            {1, 2, 3, 1},
+            {0, 1, 0, 0}
+        };
+    
+        Matrix transform;
+    
+        Matrix translationMatrix = transform.translation(3, 4, 5);
+        Ray translatedRay = r.transform(translationMatrix);
+    
+        cout << "Translating a ray: ";
+    
+        if (
+            tupleEqual(translatedRay.origin, {4, 6, 8, 1}) &&
+            tupleEqual(translatedRay.direction, {0, 1, 0, 0})
+        ) {
+            cout << "PASS";
+        } else {
+            cout << "FAIL";
+        }
+    
+        cout << endl;
+}
+ 
+
+void IntersectScaledSphereWithRay() {
+    Sphere s;
+    
+    Matrix m; 
+    Matrix Scale = m.scale(2, 2, 2);
+    s.settransform(Scale); 
+
+
+    Ray r = {
+        {0, 0, -5, 1},
+        {0, 0, 1, 0}
+    };
+
+    
+    vector<double> intersections = s.intersect(r);
+    cout << "Intersections with a scaled sphere: ";
+    for (double t : intersections) {
+        cout << t << " ";
+    }
+
+    cout << "Intersecting a scaled sphere with a ray: ";
+
+    if (intersections.size() == 2 &&
+        almostEqual(intersections[0], 3.0) &&
+        almostEqual(intersections[1], 7.0)) {
+        cout << "PASS";
+    } else {
+        cout << "FAIL";
+    }
+
+    cout << endl;
+}
+
+
+// Cast a ray to a sphere and draw a pictures to a canvas 
+// Any ray that hits the sphere should result in a red pixel, and any miss shall be drawn as black 
+
+
+
+void RaySphereCanvas() {
+    const int canvasSize = 200;
+    Canvas canvas(canvasSize, canvasSize);
+
+    Sphere s;
+    Matrix m; 
+    Matrix Scale = m.scale(50, 50, 50);
+
+    s.settransform(Scale);
+
+    // White rgb(255, 255, 255)
+    // Red rgb(255, 0, 0)
+    vector<double> redColorVec = {255, 0, 0};
+    Color red = makeColor(redColorVec);
+
+    for (int x = 0; x < canvas.width; x++) {
+        for (int y = 0; y < canvas.height; y++) {
+            double rayX = x - canvas.width / 2;
+            double rayY = y - canvas.height / 2;
+            Ray r = {
+                {rayX, rayY, -100, 1},
+                {0, 0, 1, 0}
+            };
+
+            vector<double> intersections = s.intersect(r);
+            if (!intersections.empty()) {
+                canvas.writePixel(x, y, red);
+            }
+        }
+    }
+
+    ofstream out("raySphereCanvas.ppm");
+
+    if (!out) {
+        cerr << "Could not create raySphereCanvas.ppm" << endl;
+        return;
+    }
+
+        string ppm = canvas.convertToPpm();
+
+        out << ppm;
+        out.close();
+}
+
+
+
+    // Calculate all the vectors 
+void LightShadeVectorTest() {
+    cout << "--- Running LightShadeVector Tuple (w) Tests ---\n" << endl;
+
+    // 1. Test CalculateEyeVector
+    {
+        LightShadeVector lsv;
+        vector<double> rayOrigin = {1.0, -2.0, 3.0, 1.0}; // Point
+        lsv.CalculateEyeVector(rayOrigin);
+        
+        assert(lsv.E.size() == 4);
+        assert(abs(lsv.E[0] - (-1.0)) < 1e-6);
+        assert(abs(lsv.E[1] - 2.0) < 1e-6);
+        assert(abs(lsv.E[2] - (-3.0)) < 1e-6);
+        // Note: Decide if your NegateTuple flips w. Usually, an eye vector should have w = 0.
+        cout << "[PASS] CalculateEyeVector executed successfully." << endl;
+    }
+
+    // 2. Test CalculateLightVector
+    {
+        LightShadeVector lsv;
+        vector<double> lightPosition = {0.0, 10.0, 0.0, 1.0}; // Point
+        vector<double> pointP        = {0.0, 2.0, 0.0, 1.0};  // Point
+        lsv.CalculateLightVector(lightPosition, pointP);
+        
+        // Point - Point = Vector (w = 0)
+        assert(lsv.L.size() == 4);
+        assert(abs(lsv.L[0] - 0.0) < 1e-6);
+        assert(abs(lsv.L[1] - 8.0) < 1e-6);
+        assert(abs(lsv.L[2] - 0.0) < 1e-6);
+        assert(abs(lsv.L[3] - 0.0) < 1e-6); // Verifying w component conversion
+        cout << "[PASS] CalculateLightVector creates a clean vector (w=0)." << endl;
+    }
+
+    // 3. Test CalculateNormalVector (Untransformed Sphere)
+    {
+        LightShadeVector lsv;
+        Sphere s; 
+        vector<double> pointP = {0.0, 1.0, 0.0, 1.0}; // Point on top of sphere
+        lsv.CalculateNormalVector(pointP, s);
+        
+        assert(lsv.N.size() == 4);
+        assert(abs(lsv.N[0] - 0.0) < 1e-6);
+        assert(abs(lsv.N[1] - 1.0) < 1e-6);
+        assert(abs(lsv.N[2] - 0.0) < 1e-6);
+        assert(abs(lsv.N[3] - 0.0) < 1e-6); // Normal must have w = 0
+        cout << "[PASS] CalculateNormalVector correctly sanitizes and calculates normal vector." << endl;
+    }
+
+    // 4. Test CalculateReflectionVector
+    {
+        LightShadeVector lsv;
+        // Inbound light vector pointing up and right
+        vector<double> L = {1.0, 1.0, 0.0, 0.0}; 
+        vector<double> N = {0.0, 1.0, 0.0, 0.0};  // Normal straight up
+        lsv.CalculateReflectionVector(L, N);
+        
+        // R = 2*(1)*{0,1,0,0} - {1,1,0,0} = {-1, 1, 0, 0}
+        assert(lsv.R.size() == 4);
+        assert(abs(lsv.R[0] - (-1.0)) < 1e-6);
+        assert(abs(lsv.R[1] - 1.0) < 1e-6);
+        assert(abs(lsv.R[2] - 0.0) < 1e-6);
+        assert(abs(lsv.R[3] - 0.0) < 1e-6); // Reflection must have w = 0
+        cout << "[PASS] CalculateReflectionVector correctly computes reflection trajectory." << endl;
+    }
+
+    cout << "\n--- All 4D Tuple Validation Tests Passed! ---" << endl;
+}
+
+
+
+// IN FRONT
+void LightingTestOne() {
+    // 1. Set up the local vector block
+    LightShadeVector lsv; 
+    std::vector<double> pt = {0, 0, 0, 1}; 
+    lsv.E = {0, 0, -1, 0}; 
+    lsv.N = {0, 0, -1, 0}; 
+
+    // 2. Instantiate objects
+    Color someColor(1, 1, 1);
+    PointLight ptLight({0, 0, -10, 1}, someColor);
+    Material mat; 
+
+    // 3. Process passing the light reference and localized vectors
+    Lighting lighting(ptLight); 
+    Color result = lighting.ProcessLighting(mat, lsv, pt); 
+
+    string testString = "Should be {1.9, 1.9, 1.9}"; 
+    PrintColor(testString, result); 
+}
+
+
+
+
+
+    // EYE AT 45 DEGREE ANGLE 
+    void LightingTestTwo() {
+        std::vector<double> pt = {0, 0, 0, 1}; 
+
+
+        LightShadeVector lsv; 
+        lsv.E = {0, sqrt(2)/ 2, -sqrt(2)/2, 0}; 
+        lsv.N = {0, 0, -1, 0}; 
+
+        Color someCol{1, 1, 1};
+        PointLight ptLight({0, 0, -10, 1}, someCol); 
+
+        Lighting lighting(ptLight); 
+        Material mat; 
+
+        Color result = lighting.ProcessLighting(mat, lsv, pt); 
+
+        string testString = "Should be {1.0, 1.0, 1.0}"; 
+        PrintColor(testString, result); 
+
+    }
+
+
+// TEST BEHIND THE SURFACE 
+void LightingTestThree() {
+     std::vector<double> pt = {0, 0, 0, 1}; 
+
+
+        LightShadeVector lsv; 
+        lsv.E = {0, 0, -1, 0}; 
+        lsv.N = {0, 0, -1, 0}; 
+
+        Color someCol{1, 1, 1};
+        PointLight ptLight({0, 0, 10, 1}, someCol); 
+
+        Lighting lighting(ptLight); 
+        Material mat; 
+
+        Color result = lighting.ProcessLighting(mat, lsv, pt); 
+
+        string testString = "Should be {0.1, 0.1, 0.1}"; 
+        PrintColor(testString, result); 
+
+}
+
+*/
