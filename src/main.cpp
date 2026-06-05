@@ -18,8 +18,7 @@ int main() {
 
    
 
- LightingTestThree(); 
-  
+lightingTestPpmRender(); 
 
    return 0; 
 };

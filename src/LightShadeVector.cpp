@@ -16,7 +16,7 @@ void LightShadeVector::CalculateLightVector(const vector<double> lightPosition, 
     L = NormalizeTuple(rawDog);
 } 
 
-void LightShadeVector::CalculateNormalVector(const vector<double>& pointP, Sphere& s) {
+void LightShadeVector::CalculateNormalVector(const vector<double>& pointP, const Shape& s) {
     Matrix inverseTransform = s.getTransform().inverse();
     vector<double> objectPoint = inverseTransform.multiplyTuple(pointP);
     

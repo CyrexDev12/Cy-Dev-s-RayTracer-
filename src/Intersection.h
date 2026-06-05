@@ -1,49 +1,55 @@
+// Intersection.h
 #ifndef INTERSECTION_H
 #define INTERSECTION_H
+
 #include <vector>
 
+// Forward declaration of Shape so compiler knows it exists
+class Shape; 
 
 class Intersection {
-    private: 
-        double t;  // distance along the ray to the intersection
-        void* object;  // pointer to the intersected object (e.g., Sphere)
+private: 
+    double t;  
+    const Shape* object; 
 
-    public:
-        // Constructor
-        Intersection(double t, void* object) : t(t), object(object) {}
+public:
+    Intersection(double t, const Shape* object) : t(t), object(object) {}
 
-        double getT() const {
-            return t;
-        }
+    double getT() const { return t; }
+    const Shape* getObject() const { return object; }
 
-        void* getObject() const {
-            return object;
-        }
-
-
-
-
+    // Operator overloading to easily sort intersections by distance
+    bool operator<(const Intersection& other) const {
+        return this->t < other.t;
+    }
 };
-
 
 class Intersections {
-    private:
-        std::vector<Intersection> intersections;
+private:
+    std::vector<Intersection> intersectionList;
 
-    public:
-        void addIntersection(const Intersection& intersection) {
-            intersections.push_back(intersection);
-        }
+public:
+    // Add an intersection to our collection
+    void addIntersection(const Intersection& intersection) {
+        intersectionList.push_back(intersection);
+    }
 
-        const std::vector<Intersection>& getIntersections() const {
-            return intersections;
-        }
+    // Retrieve all intersections found
+    const std::vector<Intersection>& getIntersections() const {
+        return intersectionList;
+    }
 
-        double hit() const; // Returns the t value of the closest intersection that is in front of the ray (t > 0)
+    // Clear list between rays
+    void clear() {
+        intersectionList.clear();
+    }
+
+    // Returns the closest valid intersection point (t > 0)
+    // Returns -1.0 if there is no valid hit in front of the ray
+    double hit() const; 
+
+    // Helper to get the actual object pointer of the closest hit
+    const Shape* hitObject() const;
 };
-
-
-
-
 
 #endif

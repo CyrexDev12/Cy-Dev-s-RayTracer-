@@ -14,6 +14,8 @@ using namespace std;
 
 */
 
+class Shape; 
+
 
 struct LightShadeVector {
     vector<double> E; // Eye vector
@@ -46,7 +48,7 @@ struct LightShadeVector {
 
     void CalculateLightVector(const vector<double> lightPosition, const vector<double>& pointP);
 
-    void CalculateNormalVector(const vector<double>& pointP, Sphere& s);
+    void CalculateNormalVector(const vector<double>& pointP, const Shape& s);
 
     void CalculateReflectionVector();
 

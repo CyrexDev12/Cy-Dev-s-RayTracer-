@@ -1,20 +1,38 @@
+// Intersection.cpp
 #include "Intersection.h"
-#include <iostream>
-#include <limits>
-
-
+#include <limits> // For std::numeric_limits
 
 double Intersections::hit() const {
     double closestT = std::numeric_limits<double>::infinity();
+    bool foundHit = false;
 
-    for (const Intersection& intersection : intersections) {
-        double t = intersection.getT();
-        if (t > 0 && t < closestT) {
-            closestT = t;
+    // Loop through all recorded intersections
+    for (const auto& intersection : intersectionList) {
+        double currentT = intersection.getT();
+        
+        // A valid hit must be in front of the ray (t > 0) 
+        // and closer than any previous valid hit we've found
+        if (currentT > 0.0 && currentT < closestT) {
+            closestT = currentT;
+            foundHit = true;
         }
     }
 
-    std::cout << "Closest hit t value: " << closestT << std::endl;
+    // If we found a valid positive intersection, return it. Otherwise return -1.0
+    return foundHit ? closestT : -1.0;
+}
 
-    return closestT;
+const Shape* Intersections::hitObject() const {
+    double closestT = std::numeric_limits<double>::infinity();
+    const Shape* closestShape = nullptr;
+
+    for (const auto& intersection : intersectionList) {
+        double currentT = intersection.getT();
+        if (currentT > 0.0 && currentT < closestT) {
+            closestT = currentT;
+            closestShape = intersection.getObject();
+        }
+    }
+
+    return closestShape; // Returns nullptr if nothing was hit
 }

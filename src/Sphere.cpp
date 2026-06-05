@@ -1,57 +1,42 @@
+// Sphere.cpp
 #include "Sphere.h"
+#include "Intersection.h" // Needed to construct Intersection objects
 #include <cmath>
-
 
 // Default constructor
 Sphere::Sphere() {
     radius = 1.0;
-    diamater = 2.0;
+    diameter = 2.0;             // Kept matching your header variable spelling
     position = {0.0, 0.0, 0.0}; // Center of the sphere at the origin
 }
 
+// Populates the intersections collection with concrete Intersection objects
+void Sphere::intersect(Ray ray, Intersections& intersectionsList) {
 
-
-// Return t values of the interesection points 
-// Transform the ray before calculating the intersection to account for any transformations applied to the sphere
-vector<double> Sphere::intersect(Ray ray) {
-
-    // Apply the inverse of the sphere's transformation to the ray
+    // 1. Apply the inverse of the sphere's transformation to the ray
+    // transformMatrix is cleanly accessible here because it is protected in Shape
     Ray transformedRay = ray.transform(transformMatrix.inverse());
 
-  //  transformMatrix.inverse().printMatrix();
-
-
-  // cout << "Ray Origin: " << transformedRay.origin[0] << ", " << transformedRay.origin[1] << ", " << transformedRay.origin[2] << " w: " << transformedRay.origin[3] << endl;
-  // cout << "Ray Direction: " << transformedRay.direction[0] << ", " << transformedRay.direction[1] << ", " << transformedRay.direction[2] << " w: " << transformedRay.direction[3] << endl;
-
-
-    vector<double> intersections;
-    // Using Object space for intersection calculations, so we can treat the sphere as if it's centered at the origin with radius 1
-    // Compute the coefficients of the quadratic equation
+    // 2. Compute the coefficients of the quadratic equation
+    // (Using Object space: sphere is centered at origin with radius 1)
     double a = CalculateDotProd(transformedRay.direction, transformedRay.direction);
-    double b = 2 * CalculateDotProd(transformedRay.direction, transformedRay.origin);
-    double c = CalculateDotProd(transformedRay.origin, transformedRay.origin) - 1; // Radius is 1 in object space 
+    double b = 2.0 * CalculateDotProd(transformedRay.direction, transformedRay.origin);
+    double c = CalculateDotProd(transformedRay.origin, transformedRay.origin) - 1.0; 
     
-
-    // Compute the discriminant
-    double discriminant = b * b - 4 * a * c;
+    // 3. Compute the discriminant
+    double discriminant = b * b - 4.0 * a * c;
+    
     if (discriminant < 0) {
         // No intersection
-        cout << "No intersection" << endl;
-        return intersections;
+        return;
     } else {
         // Compute the two intersection points
         double t1 = (-b - sqrt(discriminant)) / (2.0 * a);
         double t2 = (-b + sqrt(discriminant)) / (2.0 * a);
-        intersections.push_back(t1);
-        intersections.push_back(t2);
-        return intersections;
+        
+        // 4. Create modular Intersection items containing the 't' value and 'this' sphere pointer
+        // We pass 'this' because it is a pointer to the current Shape object instance
+        intersectionsList.addIntersection(Intersection(t1, this));
+        intersectionsList.addIntersection(Intersection(t2, this));
     }
-
-   
 }
-
-
-
-
-

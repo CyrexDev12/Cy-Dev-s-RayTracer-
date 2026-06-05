@@ -503,3 +503,92 @@ void LightingTestThree() {
 }
 
 */
+
+void lightingTestPpmRender() {
+    const int canvasSize = 200;
+    Canvas canvas(canvasSize, canvasSize);
+
+    // 1. Create your Sphere as a generic Shape pointer to test your modularity
+    Shape* s = new Sphere(); 
+    Matrix m; 
+    
+    // Position the sphere at the center of the world, scaling it up to size 50
+    Matrix Scale = m.scale(50, 50, 50);
+    s->setTransform(Scale); // Fixed casing to match your refactored Shape.h
+
+    // Give your sphere an ORANGE material color
+    Color orange(1.0, 0.5, 0.0); // 100% Red, 50% Green, 0% Blue makes Orange
+    s->setMaterialColor(orange);
+
+    // Setup your light source in the scene
+    Color lightColor(1.0, 1.0, 1.0); // Crisp white light
+    PointLight ptLight({-10, 10, -100, 1}, lightColor); 
+    Lighting lightingSystem(ptLight);
+
+    // Ray origin z is at -100, traveling straight forward along +Z axis
+    for (int y = 0; y < canvas.height; y++) {
+        for (int x = 0; x < canvas.width; x++) {
+
+            // Centering the coordinates on the screen canvas
+            double rayX = x - canvas.width / 2.0;
+            double rayY = (canvas.height / 2.0) - y; 
+            
+            Ray r = {
+                {rayX, rayY, -100, 1}, // Origin
+                {0, 0, 1, 0}           // Direction vector
+            };
+
+            // 2. Instantiate your modular Intersections collection container
+            Intersections sceneIntersections;
+
+            // 3. Pass the list into your shape to populate it
+            s->intersect(r, sceneIntersections);
+
+            // 4. Use your hit() function to find the true visible surface distance
+            double closestT = sceneIntersections.hit();
+
+            // hit() returns -1.0 if there are no valid positive intersections
+            if (closestT > 0.0) {
+                
+                // Calculate the exact 3D point in world space where the ray hit
+                vector<double> hitPoint = {
+                    r.origin[0] + closestT * r.direction[0],
+                    r.origin[1] + closestT * r.direction[1],
+                    r.origin[2] + closestT * r.direction[2],
+                    1.0 
+                };
+
+                // Initialize your shading vector block
+                LightShadeVector lsv;
+                lsv.CalculateEyeVector(r.direction); 
+                
+                // Pass the object pointer via (*s) to match your calculations
+                lsv.CalculateNormalVector(hitPoint, *s); 
+
+                // Run lighting math directly off the base shape's material properties
+                Color shadedColor = lightingSystem.ProcessLighting(s->getMaterial(), lsv, hitPoint);
+
+                // Write the final calculated color onto your rendering grid
+                canvas.writePixel(x, y, shadedColor);
+            } else {
+                // Background color (Midnight Dark Blue/Black)
+                canvas.writePixel(x, y, Color(0.05, 0.05, 0.1)); 
+            }
+        }
+    }
+
+    // Free memory since we used 'new' for polymorphism
+    delete s; 
+
+    ofstream out("raySphereCanvas.ppm");
+    if (!out) {
+        cerr << "Could not create raySphereCanvas.ppm" << endl;
+        return;
+    }
+
+    string ppm = canvas.convertToPpm();
+    out << ppm;
+    out.close();
+    cout << "Render complete! raySphereCanvas.ppm generated successfully with an orange sphere.\n";
+}
+

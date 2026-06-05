@@ -29,7 +29,7 @@ void LightingTestOne(); // PASSED
 void LightingTestTwo(); // PASSED
 void LightingTestThree(); // PASSED 
 */
-
+void lightingTestPpmRender();
 // TEMP 
 
 
