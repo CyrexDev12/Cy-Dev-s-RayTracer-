@@ -21,6 +21,8 @@ struct Ray {
     vector<double> origin; // POINT
     vector<double> direction; // VECTOR
     
+    Ray() = default; 
+    Ray(vector<double> org, vector<double> dir) : origin(org), direction(dir) {}
 
     // Compute the point at the given distance t along the ray
     vector<double> position(double t);

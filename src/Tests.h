@@ -28,8 +28,10 @@ void LightShadeVectorTest(); // PASSED
 void LightingTestOne(); // PASSED 
 void LightingTestTwo(); // PASSED
 void LightingTestThree(); // PASSED 
+void lightingTestPpmRender(); // PASSED
 */
-void lightingTestPpmRender();
+void defaultWorldTest();
+
 // TEMP 
 
 

@@ -3,6 +3,7 @@
 #define INTERSECTION_H
 
 #include <vector>
+#include <iostream>
 
 // Forward declaration of Shape so compiler knows it exists
 class Shape; 
@@ -22,8 +23,19 @@ public:
     bool operator<(const Intersection& other) const {
         return this->t < other.t;
     }
+
+
+    // Overload << operator to easily print a single intersection
+    friend std::ostream& operator<<(std::ostream& os, const Intersection& intersection) {
+        os << "Intersection(t: " << intersection.t << ", object address: " << intersection.object << ")";
+        return os;
+    }
+
+
 };
 
+
+//TODO: Imeplement a sort algorithm to sort the intersections in ascending order. 
 class Intersections {
 private:
     std::vector<Intersection> intersectionList;
@@ -50,6 +62,14 @@ public:
 
     // Helper to get the actual object pointer of the closest hit
     const Shape* hitObject() const;
+
+     // Added: Member function to print the entire list
+    void print() const {
+        std::cout << "--- Intersections List (Count: " << intersectionList.size() << ") ---\n";
+        for (size_t i = 0; i < intersectionList.size(); ++i) {
+            std::cout << "[" << i << "] " << intersectionList[i] << "\n";
+        }
+    }
 };
 
 #endif

@@ -12,6 +12,8 @@ private:
     const Light& sceneLight; 
 
 public: 
+    // Default Constructor 
+    Lighting() = default; 
     // Constructor accepts any light type that inherits from Light
     Lighting(const Light& lightSource) : sceneLight(lightSource) {}
 

@@ -9,6 +9,7 @@
 #include "LightShadeVector.h"
 #include "Lighting.h"
 #include "PointLight.h"
+#include "World.h"
 using namespace std; 
 
 
@@ -502,7 +503,7 @@ void LightingTestThree() {
 
 }
 
-*/
+
 
 void lightingTestPpmRender() {
     const int canvasSize = 200;
@@ -522,7 +523,7 @@ void lightingTestPpmRender() {
 
     // Setup your light source in the scene
     Color lightColor(1.0, 1.0, 1.0); // Crisp white light
-    PointLight ptLight({-10, 10, -100, 1}, lightColor); 
+    PointLight ptLight({-60.0, 40.0, -50.0, 1.0}, lightColor); 
     Lighting lightingSystem(ptLight);
 
     // Ray origin z is at -100, traveling straight forward along +Z axis
@@ -592,3 +593,45 @@ void lightingTestPpmRender() {
     cout << "Render complete! raySphereCanvas.ppm generated successfully with an orange sphere.\n";
 }
 
+*/
+
+// TODO: Not quite right tests are not passing
+// Need Output {4, 4.5, 5.5, 6}
+void defaultWorldTest() {
+    
+    PointLight* ptLight = new PointLight({-10, 10, -10, 1}, Color({1, 1, 1})); 
+
+    Shape* s1 = new Sphere(); 
+    // Configure S1 (Sphere 1)
+    s1->setMaterialColor(Color{0.8, 1.0, 0.6});  
+    s1->setDiffuse(0.7); 
+    s1->setSpecular(0.2); 
+
+    Shape *s2 = new Sphere(); 
+    // Configure S2 (Sphere 2)
+    Matrix m; 
+    m.scale(0.5, 0.5, 0.5);
+    s2->setTransform(m); 
+
+    // Setup default world 
+    World* world = new World();
+
+    // Add the shapes
+    world->AddShape(s1); 
+    world->AddShape(s2); 
+
+    // Now Instanstiate the lighting, and add it to the world 
+    // Lighting expects a PointLight object (not a pointer), so dereference
+    Lighting* lighting = new Lighting(*ptLight); 
+    world->addLighting(*lighting);
+
+    // Create the ray get all intersections from the world
+    Ray ray({0, 0, -5, 1}, {0, 0, 1, 0}); 
+    Intersections intersectionList; 
+    intersectionList = world->intersect_world(ray);
+    
+    cout << "Printing List: "; 
+    intersectionList.print(); 
+    
+    delete world; 
+}

@@ -18,7 +18,7 @@ int main() {
 
    
 
-lightingTestPpmRender(); 
+  defaultWorldTest(); 
 
    return 0; 
 };
