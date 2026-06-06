@@ -1,6 +1,7 @@
 // Intersection.cpp
 #include "Intersection.h"
 #include <limits> // For std::numeric_limits
+#include <algorithm>
 
 double Intersections::hit() const {
     double closestT = std::numeric_limits<double>::infinity();
@@ -35,4 +36,12 @@ const Shape* Intersections::hitObject() const {
     }
 
     return closestShape; // Returns nullptr if nothing was hit
+}
+
+
+// Sort the intersections into ascending order based off of t
+// In-place Sorting Algorithm is the best choice 
+// overloaded operator '>' '<' for sorting 
+void Intersections::Sort() {
+    std::sort(intersectionList.begin(), intersectionList.end());
 }

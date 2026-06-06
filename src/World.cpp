@@ -10,6 +10,6 @@ Intersections World::intersect_world(const Ray& ray) {
         s->intersect(ray, intersectionList); // Call intersect on each shape in the list, and add the intersections to the intersection list
     }
 
-
+    intersectionList.Sort(); // Sort, then return in ascending order
     return intersectionList; 
 }

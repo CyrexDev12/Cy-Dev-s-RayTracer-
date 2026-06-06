@@ -593,7 +593,7 @@ void lightingTestPpmRender() {
     cout << "Render complete! raySphereCanvas.ppm generated successfully with an orange sphere.\n";
 }
 
-*/
+
 
 // TODO: Not quite right tests are not passing
 // Need Output {4, 4.5, 5.5, 6}
@@ -610,8 +610,8 @@ void defaultWorldTest() {
     Shape *s2 = new Sphere(); 
     // Configure S2 (Sphere 2)
     Matrix m; 
-    m.scale(0.5, 0.5, 0.5);
-    s2->setTransform(m); 
+    Matrix scale = m.scale(0.5, 0.5, 0.5);
+    s2->setTransform(scale); 
 
     // Setup default world 
     World* world = new World();
@@ -635,3 +635,5 @@ void defaultWorldTest() {
     
     delete world; 
 }
+
+*/

@@ -29,8 +29,8 @@ void LightingTestOne(); // PASSED
 void LightingTestTwo(); // PASSED
 void LightingTestThree(); // PASSED 
 void lightingTestPpmRender(); // PASSED
+void defaultWorldTest(); // PASSED 
 */
-void defaultWorldTest();
 
 // TEMP 
 

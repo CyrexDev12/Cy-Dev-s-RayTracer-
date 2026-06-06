@@ -63,6 +63,9 @@ public:
     // Helper to get the actual object pointer of the closest hit
     const Shape* hitObject() const;
 
+    // Sort function to sort the intersection list into ascending order
+    void Sort(); 
+
      // Added: Member function to print the entire list
     void print() const {
         std::cout << "--- Intersections List (Count: " << intersectionList.size() << ") ---\n";
