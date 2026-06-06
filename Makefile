@@ -20,16 +20,18 @@ DEPS := $(OBJS:.o=.d)
 
 # ==============================================================================
 # Shell command compatibility
-# MSYS2 defines MSYSTEM, normal Windows CMD usually does not.
+# MSYS2 defines MSYSTEM, normal Windows CMD/PowerShell usually does not.
 # ==============================================================================
 ifdef MSYSTEM
 	MKDIR_BUILD = mkdir -p $(BUILD_DIR)
 	REMOVE_BUILD = rm -rf $(BUILD_DIR)
 	REMOVE_TARGET = rm -f $(TARGET)
+	RUN_TARGET = ./$(TARGET)
 else
 	MKDIR_BUILD = if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
 	REMOVE_BUILD = if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
 	REMOVE_TARGET = if exist $(TARGET) del /f /q $(TARGET)
+	RUN_TARGET = $(TARGET)
 endif
 
 # ==============================================================================
@@ -51,7 +53,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: all
-	./$(TARGET)
+	$(RUN_TARGET)
 
 clean:
 	@echo Cleaning build artifacts...
