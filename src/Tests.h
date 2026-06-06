@@ -35,5 +35,11 @@ void ComputationsTestInside(); // PASSED
 */
 // TEMP 
 
+// TEMP
+void defaultWorldTest();
+void ComputationsTestOutside();
+void ComputationsTestInside();
+
+
 
 #endif

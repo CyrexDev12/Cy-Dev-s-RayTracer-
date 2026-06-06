@@ -670,3 +670,18 @@ void ComputationsTestInside() {
     comp.print();
 }
 */
+
+
+void ComputationsTestInside() {
+    Ray ray({0, 0, 0, 1}, {0, 0, 1, 0}); 
+
+    Shape* sphere = new Sphere(); 
+
+    Intersection intersection(1, sphere);
+
+    Computations comp = prepareComputations(intersection, ray);
+
+    comp.print();
+
+    delete sphere;
+}
