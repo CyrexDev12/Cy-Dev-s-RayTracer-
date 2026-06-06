@@ -17,8 +17,8 @@ using namespace std;
 int main() {
 
    
-
-  defaultWorldTest(); 
+  ComputationsTestInside();
+  
 
    return 0; 
 };

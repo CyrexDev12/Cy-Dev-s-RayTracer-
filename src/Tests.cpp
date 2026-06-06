@@ -10,6 +10,7 @@
 #include "Lighting.h"
 #include "PointLight.h"
 #include "World.h"
+#include "Computations.h"
 using namespace std; 
 
 
@@ -636,4 +637,36 @@ void defaultWorldTest() {
     delete world; 
 }
 
+
+
+
+void ComputationsTestOutside() {
+    Ray ray({0, 0, -5, 1}, {0, 0, 1, 0}); 
+
+    Shape* sphere = new Sphere(); 
+
+    Intersection intersection(4, sphere);
+
+    Computations comp; 
+
+   comp = prepareComputations(intersection, ray);
+
+
+   comp.print(); 
+
+}
+
+
+void ComputationsTestInside() {
+    Ray ray({0, 0, 0, 1}, {0, 0, 1, 0}); 
+
+    Shape* sphere = new Sphere(); 
+
+    Intersection intersection(1, sphere);
+
+    Computations comp; 
+    comp = prepareComputations(intersection, ray);
+
+    comp.print();
+}
 */

@@ -15,6 +15,8 @@ public:
 
     // Implements the specific math for a sphere
     void intersect(Ray ray, Intersections& intersectionsList) override;
+
+    vector<double> normal_at(const vector<double>& worldPoint) const override;
 };
 
 #endif

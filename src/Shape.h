@@ -21,6 +21,8 @@ public:
     // Pure virtual function: Every shape must implement its own math
     virtual void intersect(Ray ray, Intersections& intersectionsList) = 0;
 
+    virtual vector<double> normal_at(const vector<double>& worldPoint) const = 0;
+
     // --- Common Getters & Setters ---
     Matrix getTransform() const { return transformMatrix; }
     void setTransform(const Matrix& m) { this->transformMatrix = m; } 

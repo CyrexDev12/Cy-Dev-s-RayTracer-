@@ -30,8 +30,9 @@ void LightingTestTwo(); // PASSED
 void LightingTestThree(); // PASSED 
 void lightingTestPpmRender(); // PASSED
 void defaultWorldTest(); // PASSED 
+void ComputationsTestOutside(); // PASSED
+void ComputationsTestInside(); // PASSED
 */
-
 // TEMP 
 
 

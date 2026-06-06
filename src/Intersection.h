@@ -17,7 +17,9 @@ public:
     Intersection(double t, const Shape* object) : t(t), object(object) {}
 
     double getT() const { return t; }
+    void setT(double tVal) {t = tVal; }
     const Shape* getObject() const { return object; }
+    void setObj(Shape* obj) {object = obj; }
 
     // Operator overloading to easily sort intersections by distance
     bool operator<(const Intersection& other) const {

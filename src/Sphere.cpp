@@ -40,3 +40,19 @@ void Sphere::intersect(Ray ray, Intersections& intersectionsList) {
         intersectionsList.addIntersection(Intersection(t2, this));
     }
 }
+
+
+vector<double> Sphere::normal_at(const vector<double>& worldPoint) const {
+    Matrix inverseTransform = Matrix(transformMatrix).inverse();
+
+    vector<double> objectPoint = inverseTransform.multiplyTuple(worldPoint);
+
+    vector<double> objectNormal = SubtractTuples(
+        objectPoint,
+        {0, 0, 0, 1}
+    );
+
+    vector<double> worldNormal = inverseTransform.multiplyTuple(objectNormal);
+
+    return NormalizeTuple(worldNormal);
+}
