@@ -685,3 +685,86 @@ void ComputationsTestInside() {
 
     delete sphere;
 }
+
+
+bool colorEqual(const Color& a, const Color& b) {
+    return almostEqual(a.r, b.r) &&
+           almostEqual(a.g, b.g) &&
+           almostEqual(a.b, b.b);
+}
+
+void printShadeTestResult(const string& testName, const Color& result, const Color& expected) {
+    cout << testName << ": ";
+
+    if (colorEqual(result, expected)) {
+        cout << "PASS\n";
+    } else {
+        cout << "FAIL\n";
+        cout << "Expected: ";
+        PrintColor("", expected);
+        cout << "Got: ";
+        PrintColor("", result);
+    }
+}
+
+void ShadeHitTestOutside() {
+    PointLight pointLight({-10, 10, -10, 1}, Color(1, 1, 1));
+    Lighting lighting(pointLight);
+
+    Shape* s1 = new Sphere();
+    s1->setMaterialColor(Color(0.8, 1.0, 0.6));
+    s1->setDiffuse(0.7);
+    s1->setSpecular(0.2);
+
+    Shape* s2 = new Sphere();
+    Matrix m;
+    Matrix scale = m.scale(0.5, 0.5, 0.5);
+    s2->setTransform(scale);
+
+    World* world = new World();
+    world->AddShape(s1);
+    world->AddShape(s2);
+    world->addLighting(lighting);
+
+    Ray ray({0, 0, -5, 1}, {0, 0, 1, 0});
+    Intersection intersection(4, s1);
+
+    Computations comps = prepareComputations(intersection, ray);
+    Color result = world->shade_hit(comps);
+
+    Color expected(0.38066, 0.47583, 0.2855);
+    printShadeTestResult("ShadeHitTestOutside", result, expected);
+
+    delete world;
+}
+
+void ShadeHitTestInside() {
+    PointLight pointLight({0, 0.25, 0, 1}, Color(1, 1, 1));
+    Lighting lighting(pointLight);
+
+    Shape* s1 = new Sphere();
+    s1->setMaterialColor(Color(0.8, 1.0, 0.6));
+    s1->setDiffuse(0.7);
+    s1->setSpecular(0.2);
+
+    Shape* s2 = new Sphere();
+    Matrix m;
+    Matrix scale = m.scale(0.5, 0.5, 0.5);
+    s2->setTransform(scale);
+
+    World* world = new World();
+    world->AddShape(s1);
+    world->AddShape(s2);
+    world->addLighting(lighting);
+
+    Ray ray({0, 0, 0, 1}, {0, 0, 1, 0});
+    Intersection intersection(0.5, s2);
+
+    Computations comps = prepareComputations(intersection, ray);
+    Color result = world->shade_hit(comps);
+
+    Color expected(0.90498, 0.90498, 0.90498);
+    printShadeTestResult("ShadeHitTestInside", result, expected);
+
+    delete world;
+}

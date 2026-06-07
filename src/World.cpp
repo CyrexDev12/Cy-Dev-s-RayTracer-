@@ -1,4 +1,6 @@
 #include "World.h"
+#include "LightShadeVector.h"
+#include <stdexcept>
 
 // Intersect World Function 
 // Iterate over all of the objects that have been added to the world, intersecting them with the ray. 
@@ -12,4 +14,21 @@ Intersections World::intersect_world(const Ray& ray) {
 
     intersectionList.Sort(); // Sort, then return in ascending order
     return intersectionList; 
+}
+
+
+Color World::shade_hit(const Computations& comps) {
+    if (lighting == nullptr) {
+        throw std::runtime_error("World has no lighting configured.");
+    }
+
+    LightShadeVector lsv;
+    lsv.E = comps.eyev;
+    lsv.N = comps.normalv;
+
+    return lighting->ProcessLighting(
+        comps.object->getMaterial(),
+        lsv,
+        comps.point
+    );
 }

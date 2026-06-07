@@ -17,7 +17,9 @@ using namespace std;
 int main() {
 
    
-  ComputationsTestInside();
+  //ComputationsTestInside();
+  ShadeHitTestOutside();
+    ShadeHitTestInside();
   
 
    return 0; 

@@ -39,6 +39,8 @@ void ComputationsTestInside(); // PASSED
 void defaultWorldTest();
 void ComputationsTestOutside();
 void ComputationsTestInside();
+void ShadeHitTestOutside();
+void ShadeHitTestInside();
 
 
 
