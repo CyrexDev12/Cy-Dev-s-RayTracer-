@@ -17,6 +17,11 @@ public:
     // Constructor accepts any light type that inherits from Light
     Lighting(const Light& lightSource) : sceneLight(lightSource) {}
 
+    // Destructor 
+    ~Lighting() {
+        delete &sceneLight; 
+    }
+
     // Pass the LightShadeVector dynamically by reference
     Color ProcessLighting(Material mat, 
                            LightShadeVector& lsv, 

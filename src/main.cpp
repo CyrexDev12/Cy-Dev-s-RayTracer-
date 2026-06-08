@@ -17,9 +17,7 @@ using namespace std;
 int main() {
 
    
-  //ComputationsTestInside();
-  ShadeHitTestOutside();
-    ShadeHitTestInside();
+Color_atTest2();
   
 
    return 0; 

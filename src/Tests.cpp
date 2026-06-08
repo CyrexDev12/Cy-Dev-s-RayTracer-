@@ -669,7 +669,7 @@ void ComputationsTestInside() {
 
     comp.print();
 }
-*/
+
 
 
 void ComputationsTestInside() {
@@ -768,3 +768,45 @@ void ShadeHitTestInside() {
 
     delete world;
 }
+    
+
+// The ray fails to intersect anything and should return black
+void Color_AtTest1() {
+    World* world = new World(); 
+
+    Ray r({0, 0, -5, 1}, {0, 0, 1, 0}); 
+
+    Color c = world->Color_at(r);
+    string label = "Should be {0, 0, 0}";
+    PrintColor(label, c); 
+}
+
+
+// Expect Color_at() to use hit when computing the color. Ray inside an outer sphere, but outside the inner sphere,
+// and poiting at the inner sphere
+// We expect the hit to be on the inner sphere, and thus return its color
+void Color_atTest2() {
+     World* world = new World(); // Should initalize default world 
+     Shape* s1 = new Sphere(); 
+     s1->setAmbient(1);
+     world->AddShape(s1);
+     Shape* s2 = new Sphere(); 
+     s2->setAmbient(1);
+     world->AddShape(s2);
+
+    Ray r({0, 0, 0.75, 1}, {0, 0, -1, 0}); 
+
+    Color c = world->Color_at(r);
+    string label = "Output";
+    PrintColor(label, c); 
+    Color res = s2->getMaterialColor();
+    cout << "Should be: " << endl; 
+     PrintColor(label, res);
+
+
+     delete world; 
+     delete s1; 
+     delete s2; 
+}
+
+*/
