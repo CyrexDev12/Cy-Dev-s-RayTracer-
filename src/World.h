@@ -4,6 +4,7 @@
 #include <vector>  // Added: explicitly include vector
 #include "Shape.h"
 #include "Lighting.h"
+#include "Computations.h"
 
 class World {
 private: 
@@ -38,6 +39,8 @@ public:
     }
 
     Intersections intersect_world(const Ray& ray); 
+    // hehe 
+    Color shade_hit(const Computations& comps);
 };
 
 #endif
