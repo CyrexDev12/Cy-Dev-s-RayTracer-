@@ -39,6 +39,9 @@ void ShadeHitTestOutside(); // PASSED
 void ShadeHitTestInside(); // PASSED
 void Color_AtTest1(); // Passed
 void Color_atTest2(); // Passed
+void viewTransformTest(); // Passed
+void  rayPixelTest(); // Passed 
 */ 
+void MultiSpherereRender();
 
 #endif

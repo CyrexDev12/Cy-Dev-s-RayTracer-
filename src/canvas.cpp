@@ -4,6 +4,7 @@
 #include <string> 
 #include <sstream>
 #include <cmath> // Required for std::round
+#include <fstream>
 
 using namespace std; 
 
@@ -75,4 +76,18 @@ std::string Canvas::constructPixelData() {
 // your PPM's max color value will always safely be 255.
 int Canvas::getMaxColorVal() {
     return 255;
+}
+
+// Outputs the PPM file 
+void Canvas::canvasOut() {
+     ofstream out("raySphereCanvas.ppm");
+    if (!out) {
+        cerr << "Could not create raySphereCanvas.ppm" << endl;
+        return;
+    }
+
+    string ppm = convertToPpm(); 
+    out << ppm;
+    out.close();
+    cout << "Render complete! raySphereCanvas.ppm\n";
 }

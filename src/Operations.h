@@ -14,6 +14,9 @@ struct Color {
     Color(double giveR, double giveG, double giveB) : r(giveR), g(giveG), b(giveB) {}
 };
 
+
+
+
 bool isTuple(const vector<double> &point);
 bool isPoint(const vector<double> &point);
 bool isVector(const vector<double> &point);

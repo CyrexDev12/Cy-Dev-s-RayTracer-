@@ -176,21 +176,21 @@ double CalculateDotProd(const vector<double>& x1, const vector<double>& x2) {
 }
 
 
+
 vector<double> CrossProduct(const vector<double>& a, const vector<double>& b) {
-    if (a.size() != 3 || b.size() != 3) {
-        throw invalid_argument("CrossProduct requires 3D vectors.");
+    if (a.size() != 4 || b.size() != 4) {
+        throw invalid_argument("CrossProduct requires 4D vectors (x,y,z,w).");
     }
 
-    if (isTuple(a) || isTuple(b)) {
-        throw invalid_argument("Cross product cannot be computed with tuples!");
-    }
+    // Use only x, y, z components
+    double cx = a[1] * b[2] - a[2] * b[1];
+    double cy = a[2] * b[0] - a[0] * b[2];
+    double cz = a[0] * b[1] - a[1] * b[0];
 
-    return {
-        a[1] * b[2] - a[2] * b[1],  // x component
-        a[2] * b[0] - a[0] * b[2],  // y component
-        a[0] * b[1] - a[1] * b[0]   // z component
-    };
+    // w = 0 → result is a direction vector
+    return {cx, cy, cz, 0.0};
 }
+
 
 // Creates a floating-point color from a vector
 Color makeColor(const std::vector<double>& rgb) {

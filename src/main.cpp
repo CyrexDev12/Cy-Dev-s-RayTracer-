@@ -17,7 +17,7 @@ using namespace std;
 int main() {
 
    
-Color_atTest2();
+MultiSpherereRender();
   
 
    return 0; 
