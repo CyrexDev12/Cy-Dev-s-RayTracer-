@@ -43,5 +43,9 @@ void ShadeHitTestOutside();
 void ShadeHitTestInside();
 
 
+void NormalOnTranslatedSphereTest();
+void NormalOnTransformedSphereTest();
+
+
 
 #endif

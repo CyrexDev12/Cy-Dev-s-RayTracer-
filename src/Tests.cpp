@@ -768,3 +768,43 @@ void ShadeHitTestInside() {
 
     delete world;
 }
+
+
+
+void NormalOnTranslatedSphereTest() {
+    Sphere s;
+    Matrix m;
+
+    s.setTransform(m.translation(0, 1, 0));
+
+    vector<double> n = s.normal_at({0, 1.70711, -0.70711, 1});
+
+    cout << "NormalOnTranslatedSphereTest: ";
+    if (tupleEqual(n, {0, 0.70711, -0.70711, 0})) {
+        cout << "PASS\n";
+    } else {
+        cout << "FAIL - got ";
+        PrintTuple(n);
+    }
+}
+
+void NormalOnTransformedSphereTest() {
+    Sphere s;
+    Matrix m;
+
+    Matrix scale = m.scale(1, 0.5, 1);
+    Matrix rotate = m.rotateZ(M_PI / 5);
+    Matrix transform = scale.multiplyMatrix(rotate);
+
+    s.setTransform(transform);
+
+    vector<double> n = s.normal_at({0, sqrt(2) / 2, -sqrt(2) / 2, 1});
+
+    cout << "NormalOnTransformedSphereTest: ";
+    if (tupleEqual(n, {0, 0.97014, -0.24254, 0})) {
+        cout << "PASS\n";
+    } else {
+        cout << "FAIL - got ";
+        PrintTuple(n);
+    }
+}

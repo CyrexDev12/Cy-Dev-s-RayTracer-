@@ -17,10 +17,16 @@ using namespace std;
 int main() {
 
    
-  //ComputationsTestInside();
-  ShadeHitTestOutside();
-    ShadeHitTestInside();
+  // //ComputationsTestInside();
+  // ShadeHitTestOutside();
+  //   ShadeHitTestInside();
   
+
+
+  NormalOnTranslatedSphereTest();
+    NormalOnTransformedSphereTest();
+    
+   
 
    return 0; 
 };
