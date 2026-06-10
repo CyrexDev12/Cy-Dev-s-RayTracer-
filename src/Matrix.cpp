@@ -1,6 +1,7 @@
 #include "Matrix.h"
 #include "iostream"
 #include <cmath>
+#include "Operations.h"
 using namespace std; 
 
 
@@ -339,8 +340,40 @@ double Matrix::determinantHelper(vector<vector<double>> mat) {
 
     }
 
+ // Returns a view orientation matrix 
+Matrix Matrix::ViewOrientation(vector<double>& left, vector<double>& trueUp, vector<double>& forward) {
+    // Corrected to map x->0, y->1, z->2 properly for all three axes
+    vector<double> arr = {
+         left[0],     left[1],     left[2],    0.0,
+       trueUp[0],   trueUp[1],   trueUp[2],    0.0,
+     -forward[0], -forward[1], -forward[2],    0.0,
+             0.0,         0.0,         0.0,    1.0
+    };
 
+    return Matrix(4, 4, arr); 
+}
 
+// Translates the eye vector 
+// pretends the eye moves, not the world itself
+// Params; from -> the point at which you are moving from, to -> The point in the scene in which you want to look, up -> a vector indicating which direction is up
+// MUST BE TUPLES 
+Matrix Matrix::viewTransformation(vector<double>& from, vector<double>& to, vector<double>& up) {
+    // 1. Calculate and normalize forward vector (ensure w=0 if your SubtractTuples doesn't)
+    vector<double> forward = NormalizeTuple(SubtractTuples(to, from)); 
+    
+    // 2. Normalize up helper vector
+    vector<double> upN = NormalizeTuple(up); 
+
+    // 3. Compute left and trueUp (cross product logic should handle 4D or drop w)
+    vector<double> left = CrossProduct(forward, upN); 
+    vector<double> trueUp = CrossProduct(left, forward); 
+
+    Matrix m; // Identity Matrix
+    Matrix orMatrix = m.ViewOrientation(left, trueUp, forward); 
+    Matrix trans = m.translation(-from[0], -from[1], -from[2]); 
+
+    return orMatrix.multiplyMatrix(trans); 
+}
   
 
     // Debug functions 

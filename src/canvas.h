@@ -23,6 +23,7 @@ struct Canvas {
     }
 
     void writePixel(int x, int y, const Color& C);
+    void canvasOut(); 
     std::string convertToPpm();
     std::string constructPixelData();
     int getMaxColorVal();

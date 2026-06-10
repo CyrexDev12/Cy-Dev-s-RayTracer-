@@ -32,20 +32,19 @@ void lightingTestPpmRender(); // PASSED
 void defaultWorldTest(); // PASSED 
 void ComputationsTestOutside(); // PASSED
 void ComputationsTestInside(); // PASSED
-*/
-// TEMP 
-
-// TEMP
-void defaultWorldTest();
-void ComputationsTestOutside();
-void ComputationsTestInside();
-void ShadeHitTestOutside();
-void ShadeHitTestInside();
-
-
+void defaultWorldTest(); // PASSED
+void ComputationsTestOutside(); // PASSED
+void ComputationsTestInside(); // PASSED
+void ShadeHitTestOutside(); // PASSED
+void ShadeHitTestInside(); // PASSED
+void Color_AtTest1(); // Passed
+void Color_atTest2(); // Passed
+void viewTransformTest(); // Passed
+void  rayPixelTest(); // Passed 
+*/ 
 void NormalOnTranslatedSphereTest();
 void NormalOnTransformedSphereTest();
 
-
+void MultiSpherereRender();
 
 #endif

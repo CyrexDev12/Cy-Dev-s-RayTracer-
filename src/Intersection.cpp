@@ -2,41 +2,29 @@
 #include "Intersection.h"
 #include <limits> // For std::numeric_limits
 #include <algorithm>
+using namespace std; 
 
-double Intersections::hit() const {
+
+// Returns the closest t
+// Used in hit() function to return a valid positive intersection 
+// Change the return type to a pointer so you can safely signal "no hit"
+const Intersection* Intersections::hit() const {
+    const Intersection* closestIntersection = nullptr;
     double closestT = std::numeric_limits<double>::infinity();
-    bool foundHit = false;
 
-    // Loop through all recorded intersections
     for (const auto& intersection : intersectionList) {
         double currentT = intersection.getT();
         
-        // A valid hit must be in front of the ray (t > 0) 
-        // and closer than any previous valid hit we've found
-        if (currentT > 0.0 && currentT < closestT) {
+        // Match the book: t >= 0 (or t > 0 depending on your epsilon approach)
+        if (currentT >= 0.0 && currentT < closestT) {
             closestT = currentT;
-            foundHit = true;
+            closestIntersection = &intersection; // Track the actual object
         }
     }
 
-    // If we found a valid positive intersection, return it. Otherwise return -1.0
-    return foundHit ? closestT : -1.0;
+    return closestIntersection; // Returns nullptr naturally if no positive t found
 }
 
-const Shape* Intersections::hitObject() const {
-    double closestT = std::numeric_limits<double>::infinity();
-    const Shape* closestShape = nullptr;
-
-    for (const auto& intersection : intersectionList) {
-        double currentT = intersection.getT();
-        if (currentT > 0.0 && currentT < closestT) {
-            closestT = currentT;
-            closestShape = intersection.getObject();
-        }
-    }
-
-    return closestShape; // Returns nullptr if nothing was hit
-}
 
 
 // Sort the intersections into ascending order based off of t

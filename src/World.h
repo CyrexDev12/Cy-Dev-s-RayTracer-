@@ -9,11 +9,12 @@
 class World {
 private: 
     std::vector<Shape*> shapesList; // List holding all shapes
-    Lighting* lighting = nullptr;   // Initialized to nullptr to avoid dangling pointers
+    Lighting* lighting = nullptr;   // Initialized to nullptr to avoid dangling pointers 
+
 
 public: 
     // Default constructor
-    World() = default; 
+    World();
 
     // DESTRUCTOR: Cleans up heap memory allocated for shapes
     ~World() {
@@ -39,8 +40,12 @@ public:
     }
 
     Intersections intersect_world(const Ray& ray); 
+
+
     // hehe 
     Color shade_hit(const Computations& comps);
+
+    Color Color_at(const Ray& ray);
 };
 
 #endif

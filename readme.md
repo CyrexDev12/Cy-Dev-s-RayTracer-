@@ -81,3 +81,15 @@ Simulates interaction between three different types of lighting.
 
 The lighting Function (Located within the object class, e.g. sphere)
 Expects 5 arguments material, point being illuminated, the light source, eye and normal vectors from the phong reflection model. 
+
+
+Camera 
+
+Map a 3-Dimensional scene onto a two dimensional canvas. 
+Cameras Canvas will always be one unit away from the camera 
+
+
+
+To Do: 
+
+- Switch from using vector<double> to using a tuple class, so it is dealt with on the stack istead of heap to make the program faster. 

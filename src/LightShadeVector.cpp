@@ -37,3 +37,4 @@ void LightShadeVector::CalculateReflectionVector() {
     R[3] = 0.0; 
     R = NormalizeTuple(R); // Add this to guarantee a perfect unit vector!
 }
+

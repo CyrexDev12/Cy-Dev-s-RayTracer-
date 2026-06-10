@@ -42,6 +42,8 @@ class Matrix {
     Matrix translation(double x, double y, double z);
     Matrix scale(double x, double y, double z);
     Matrix shearing(double xy, double xz, double yx, double yz, double zx, double zy);
+    Matrix ViewOrientation(vector<double>& left, vector<double>& trueUp, vector<double>& forward); 
+    Matrix viewTransformation(vector<double>& from, vector<double>& to, vector<double>& up);
     vector<double> multiplyTuple(const vector<double>& tuple);
     // Rotations 
     Matrix rotateX(double radians);

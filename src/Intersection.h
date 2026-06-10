@@ -58,9 +58,17 @@ public:
         intersectionList.clear();
     }
 
+    bool empty() {
+        if (intersectionList.empty()) {
+            return true;
+        }
+
+        return false; 
+    }
     // Returns the closest valid intersection point (t > 0)
     // Returns -1.0 if there is no valid hit in front of the ray
-    double hit() const; 
+    // Update: Returns an intersection obj instead of a double val
+    const Intersection* hit() const;
 
     // Helper to get the actual object pointer of the closest hit
     const Shape* hitObject() const;

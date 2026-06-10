@@ -11,6 +11,7 @@
 #include "PointLight.h"
 #include "World.h"
 #include "Computations.h"
+#include "Camera.h"
 using namespace std; 
 
 
@@ -669,7 +670,7 @@ void ComputationsTestInside() {
 
     comp.print();
 }
-*/
+
 
 
 void ComputationsTestInside() {
@@ -768,8 +769,76 @@ void ShadeHitTestInside() {
 
     delete world;
 }
+    
+
+// The ray fails to intersect anything and should return black
+void Color_AtTest1() {
+    World* world = new World(); 
+
+    Ray r({0, 0, -5, 1}, {0, 0, 1, 0}); 
+
+    Color c = world->Color_at(r);
+    string label = "Should be {0, 0, 0}";
+    PrintColor(label, c); 
+}
 
 
+// Expect Color_at() to use hit when computing the color. Ray inside an outer sphere, but outside the inner sphere,
+// and poiting at the inner sphere
+// We expect the hit to be on the inner sphere, and thus return its color
+void Color_atTest2() {
+     World* world = new World(); // Should initalize default world 
+     Shape* s1 = new Sphere(); 
+     s1->setAmbient(1);
+     world->AddShape(s1);
+     Shape* s2 = new Sphere(); 
+     s2->setAmbient(1);
+     world->AddShape(s2);
+
+    Ray r({0, 0, 0.75, 1}, {0, 0, -1, 0}); 
+
+    Color c = world->Color_at(r);
+    string label = "Output";
+    PrintColor(label, c); 
+    Color res = s2->getMaterialColor();
+    cout << "Should be: " << endl; 
+     PrintColor(label, res);
+
+
+     delete world; 
+     delete s1; 
+     delete s2; 
+}
+
+
+
+
+
+void viewTransformTest() {
+    vector<double> from = {1, 3, 2, 1}; 
+    vector<double> to = {4, -2, 8, 1}; 
+    vector<double> up = {1, 1, 0, 0}; 
+
+    Matrix m; 
+    Matrix viewT = m.viewTransformation(from, to, up); 
+
+    viewT.printMatrix(); 
+}
+
+
+void  rayPixelTest() {
+    Camera c(201, 101, M_PI / 2); 
+    Matrix m; 
+    Matrix rot = m.rotateY(M_PI / 4); 
+    Matrix trans = m.translation(0, -2, 5); 
+    c.setTransformM(rot.multiplyMatrix(trans));
+
+    Ray r = ray_for_pixel(c, 100, 50); 
+   // c.print();
+    r.printRay(); 
+}
+
+*/
 
 void NormalOnTranslatedSphereTest() {
     Sphere s;
@@ -807,4 +876,89 @@ void NormalOnTransformedSphereTest() {
         cout << "FAIL - got ";
         PrintTuple(n);
     }
+}
+
+void MultiSpherereRender() {
+    Matrix m; // Identity Matrix initialized 
+
+    // Create the world tracking instance
+    World* world = new World(); 
+
+    // 2. Flattened sphere on the bottom (FLOOR)
+    Shape* floor = new Sphere; 
+    floor->setTransform(m.scale(10, 0.01, 10)); 
+    floor->setMaterialColor(Color{1, 0.9, 0.9}); 
+    floor->setSpecular(0); 
+    world->AddShape(floor);
+
+    // Common transformation sub-matrices for the walls
+    Matrix trans = m.translation(0, 0, 5); 
+    Matrix rotX = m.rotateX(M_PI / 2);  
+    Matrix scaling = m.scale(10, 0.01, 10); 
+
+    // 3. Wall on the left 
+    // Left-to-right application order: Translate -> Rotate Y -> Rotate X -> Scale
+    Shape* lwall = new Sphere; 
+    Matrix rotY = m.rotateY(-M_PI / 4); 
+    Matrix finalTrans = trans.multiplyMatrix(rotY).multiplyMatrix(rotX).multiplyMatrix(scaling);
+    lwall->setTransform(finalTrans);
+    lwall->setMaterialColor(Color{1, 0.9, 0.9}); 
+    lwall->setSpecular(0);
+    world->AddShape(lwall);
+
+    // 4. Wall on the right
+    Shape* rwall = new Sphere; 
+    Matrix rotYR = m.rotateY(M_PI / 4); 
+    Matrix finalTransR = trans.multiplyMatrix(rotYR).multiplyMatrix(rotX).multiplyMatrix(scaling);
+    rwall->setTransform(finalTransR);
+    rwall->setMaterialColor(Color{1, 0.9, 0.9}); 
+    rwall->setSpecular(0);
+    world->AddShape(rwall);
+
+    // 5. Large sphere in the middle 
+    Shape* middle = new Sphere; 
+    Matrix transMid = m.translation(-0.5, 1, 0.5); 
+    middle->setTransform(transMid); 
+    middle->setMaterialColor(Color{0.1, 1, 0.5}); 
+    middle->setDiffuse(0.7); 
+    middle->setSpecular(0.3); 
+    world->AddShape(middle);
+
+    // 6. Smaller green Sphere on the right 
+    Shape* right = new Sphere; 
+    Matrix transRight = m.translation(1.5, 0.5, -0.5); 
+    Matrix scaleRight = m.scale(0.5, 0.5, 0.5); 
+    Matrix finalRight = transRight.multiplyMatrix(scaleRight); // Translate -> Scale
+    right->setTransform(finalRight); 
+    right->setMaterialColor(Color{0.5, 1, 0.1}); 
+    right->setDiffuse(0.7); 
+    right->setSpecular(0.3); 
+    world->AddShape(right);
+
+    // 7. Smallest sphere on the left
+    Shape* left = new Sphere; 
+    Matrix transLeft = m.translation(-1.5, 0.33, -0.75);
+    Matrix scaleLeft = m.scale(0.33, 0.33, 0.33); 
+    Matrix finalleft = transLeft.multiplyMatrix(scaleLeft); // Fixed original typo: Translate -> Scale
+    left->setTransform(finalleft); 
+    left->setMaterialColor(Color{1, 0.8, 0.1});
+    left->setDiffuse(0.7); 
+    left->setSpecular(0.3); 
+    world->AddShape(left); 
+
+    // 8. Camera Configuration
+    Camera cam(100, 50, M_PI / 3); 
+    std::vector<double> from = {0.0, 1.5, -5.0, 1.0}; 
+    std::vector<double> to   = {0.0, 1.0,  0.0, 1.0};
+    std::vector<double> up   = {0.0, 1.0,  0.0, 0.0}; 
+    Matrix viewTrans = m.viewTransformation(from, to, up); 
+    cam.setTransformM(viewTrans);
+
+    // 9. Execution and Frame Flush
+    Canvas canvas = render(cam, *world);
+    canvas.canvasOut(); 
+
+    // Clean up memory
+    delete world;
+
 }
