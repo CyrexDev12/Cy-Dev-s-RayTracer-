@@ -17,6 +17,8 @@ using namespace std;
 int main() {
 
    
+NormalOnTranslatedSphereTest();
+NormalOnTransformedSphereTest();
 MultiSpherereRender();
   
 
