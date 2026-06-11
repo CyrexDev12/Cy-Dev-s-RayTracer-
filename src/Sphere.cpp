@@ -40,17 +40,14 @@ void Sphere::intersect(Ray ray, Intersections& intersectionsList) {
         intersectionsList.addIntersection(Intersection(t2, this));
     }
 }
-/* NOTE FOR CYREX DURING CODE REVIEW */
+/* CODE REVIEW */
 /*this is where our bug is because intersect() correctly transforms the incoming ray by the inverse transform before doing sphere math,
 but normal_at() currently transforms the normal with only the inverse matrix, not inverse-transpose.*/
 
 
 vector<double> Sphere::normal_at(const vector<double>& worldPoint) const {
-    
-    // Matrix inverseTransform = Matrix(transformMatrix).inverse();
-    Matrix transformCopy = transformMatrix;
-    
-    Matrix inverseTransform = transformCopy.inverse();
+   
+    Matrix inverseTransform = Matrix(transformMatrix).inverse();
 
     vector<double> objectPoint = inverseTransform.multiplyTuple(worldPoint);
 
@@ -59,16 +56,12 @@ vector<double> Sphere::normal_at(const vector<double>& worldPoint) const {
         {0, 0, 0, 1}
     );
 
-    // Normals must use transpose(inverse(transform)), not just inverse(transform)
-    // This keeps lighting correct for non-uniformly scaled shapes like flattened floors/walls
-    Matrix inverseTranspose = inverseTransform.transpose();
+    vector<double> worldNormal =
+        inverseTransform.transpose().multiplyTuple(objectNormal);
     
-
-    //vector<double> worldNormal = inverseTransform.multiplyTuple(objectNormal);
-    vector<double> worldNormal = inverseTranspose.multiplyTuple(objectNormal);
-
-    // this should be a vector
-     worldNormal[3] = 0.0;
+    // this should be a vector, super important
+    worldNormal[3] = 0.0;
 
     return NormalizeTuple(worldNormal);
+
 }
