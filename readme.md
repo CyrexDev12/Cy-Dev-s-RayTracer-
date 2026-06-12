@@ -100,3 +100,12 @@ Shadows
 
 Ray tracer computes shadows by casting a ray, called a shadow ray. From each point of intersection toward the light source. If something intersects that shadow
 ray between the point and the light source, then the point is considered to be a shadow. 
+
+
+Implementing New Objects 
+
+Base class Shape* is an abstract class that handles generic operations like transformations and material assignment. 
+
+Plane
+- Normal is always straight up at (0, 1, 0)
+- Local Intersect: If the ray is parallel to the plane (ray.direction.y is close to 0), it misses completeley. Otherwise, t = -rayorigin.y  ray.direction.y 

@@ -17,7 +17,7 @@ using namespace std;
 int main() {
 
    
-MultiSpherereRender();
+PlaneRenderTest();
   
 
    return 0; 

@@ -11,7 +11,8 @@
 #include "PointLight.h"
 #include "World.h"
 #include "Computations.h"
-#include "Camera.h"
+#include "Camera.h"|
+#include "Plane.h"
 using namespace std; 
 
 
@@ -877,7 +878,7 @@ void NormalOnTransformedSphereTest() {
         PrintTuple(n);
     }
 }
-*/
+
 void MultiSpherereRender() {
     Matrix m; // Identity Matrix initialized 
 
@@ -961,4 +962,63 @@ void MultiSpherereRender() {
     // Clean up memory
     delete world;
 
+}
+*/
+
+
+void PlaneRenderTest() {
+    Matrix m; // Identity Matrix initialized 
+
+    // Create the world tracking instance
+    World* world = new World(); 
+
+    // 1. Add a Light Source (Assuming your world needs a light set up)
+    // PointLight light(Color{1, 1, 1}, {-10, 10, -10, 1});
+    // world->SetLight(light);
+
+    // 2. TRUE FLOOR (Using your new Plane class)
+    // No flattening scale or rotation needed! A plane is infinitely flat at y = 0.
+    Plane* floor = new Plane(); 
+    floor->setMaterialColor(Color{0.2, 0.3, 0.5}); // Nice blue-grey floor
+    floor->setSpecular(0.1); 
+    // You can leave the transform as Identity, or shift it slightly down if wanted
+    // floor->setTransform(m.translation(0, 0, 0)); 
+    world->AddShape(floor);
+
+    // 3. TRUE BACK WALL (Using your new Plane class)
+    // We just take an infinite plane and rotate it 90 degrees around X, 
+    // then push it back along Z to make it a vertical wall.
+    Plane* backWall = new Plane();
+    Matrix wallTrans = m.translation(0, 0, 5);
+    Matrix wallRotX = m.rotateX(M_PI / 2); // Rotate flat plane vertical
+    Matrix finalWallTransform = wallTrans.multiplyMatrix(wallRotX);
+    backWall->setTransform(finalWallTransform);
+    backWall->setMaterialColor(Color{0.8, 0.8, 0.8}); // Light grey wall
+    backWall->setSpecular(0);
+    world->AddShape(backWall);
+
+    // 4. Large test sphere floating slightly above the floor
+    Shape* middle = new Sphere(); 
+    Matrix transMid = m.translation(0, 1, 1); 
+    middle->setTransform(transMid); 
+    middle->setMaterialColor(Color{1, 0.2, 0.2}); // Bright red sphere
+    middle->setDiffuse(0.7); 
+    middle->setSpecular(0.3); 
+    world->AddShape(middle);
+
+    // 5. Camera Configuration
+    // Low resolution (100x50) for a fast test print
+    Camera cam(100, 50, M_PI / 3); 
+    std::vector<double> from = {0.0, 1.5, -5.0, 1.0}; // Elevated view
+    std::vector<double> to   = {0.0, 1.0,  0.0, 1.0};  // Looking at the center
+    std::vector<double> up   = {0.0, 1.0,  0.0, 0.0}; 
+    Matrix viewTrans = m.viewTransformation(from, to, up); 
+    cam.setTransformM(viewTrans);
+
+    // 6. Execution and Frame Flush
+    Canvas canvas = render(cam, *world);
+    canvas.canvasOut(); 
+
+    // Clean up memory
+    delete world;
 }

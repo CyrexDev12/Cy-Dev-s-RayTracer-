@@ -43,6 +43,8 @@ void viewTransformTest(); // Passed
 void  rayPixelTest(); // Passed 
 void NormalOnTranslatedSphereTest();  // Passed
 void NormalOnTransformedSphereTest();  // Passed
-*/
 void MultiSpherereRender();  // Passed
+*/
+void PlaneRenderTest();
+
 #endif
