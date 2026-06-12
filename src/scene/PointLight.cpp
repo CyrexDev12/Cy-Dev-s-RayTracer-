@@ -11,7 +11,7 @@ PointLight::PointLight() {
 
 
 // Constructor for PointLight, initializes position and intensity
-// Default color white: rgb(255, 255, 255) 
+// White Color default 
   PointLight::PointLight(const std::vector<double>& pos, const Color& col) {
     if (!isPoint(pos)) {
         throw invalid_argument("Must be a point tuple!");

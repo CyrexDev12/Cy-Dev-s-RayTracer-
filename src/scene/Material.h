@@ -7,6 +7,7 @@
 // INCLUDE AMBIENT, DIFFUSE, SPECULAR, SHININESS
 // MUST BE UNSIGNED NEGATIVE FLOATING POINTS BETWEEN 0-1, SHININESS VALUES 10-200
 
+class Pattern; // Forward decleration 
 
 struct Material {
     double ambient; 
@@ -14,6 +15,7 @@ struct Material {
     double specular; 
     double shininess; 
     Color color;
+    Pattern *pattern{nullptr}; 
 
      Material() : ambient(0.1), diffuse(0.9), specular(0.9), shininess(200.0), color(1.0, 1.0, 1.0) {}
 

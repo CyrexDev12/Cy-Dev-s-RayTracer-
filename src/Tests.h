@@ -44,7 +44,9 @@ void  rayPixelTest(); // Passed
 void NormalOnTranslatedSphereTest();  // Passed
 void NormalOnTransformedSphereTest();  // Passed
 void MultiSpherereRender();  // Passed
+void PlaneRenderTest(); // Passed 
 */
-void PlaneRenderTest();
+void PatternRenderTest();
+
 
 #endif
