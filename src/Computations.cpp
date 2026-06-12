@@ -33,6 +33,12 @@ Computations prepareComputations(const Intersection& intersection, Ray ray) {
         comps.inside = false;
     }
 
+    // Over Point = point + (normal * epsilon)
+    const double EPSILON = 1e-5;
+    vector<double> normEps = ScaleTuple(comps.normalv, EPSILON); 
+    comps.overPt = AddTuples(comps.point, normEps); 
+
+
     return comps;
 }
 

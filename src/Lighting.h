@@ -22,10 +22,14 @@ public:
         delete &sceneLight; 
     }
 
+    vector<double> getPos() {
+        return sceneLight.getPosition(); 
+    }
+
     // Pass the LightShadeVector dynamically by reference
     Color ProcessLighting(Material mat, 
                            LightShadeVector& lsv, 
-                           const std::vector<double>& point);
+                           const std::vector<double>& point, bool in_shadow);
 
 };
 

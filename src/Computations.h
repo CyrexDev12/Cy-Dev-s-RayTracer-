@@ -16,6 +16,7 @@ struct Computations {
 
 
     vector<double> point; 
+    vector<double> overPt; // Adjusted pt, slightly in the direction of the normal (Prevents self shadowing)
     vector<double> eyev; 
     vector<double> normalv; 
 

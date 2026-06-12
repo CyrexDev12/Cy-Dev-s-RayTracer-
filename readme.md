@@ -93,3 +93,10 @@ Cameras Canvas will always be one unit away from the camera
 To Do: 
 
 - Switch from using vector<double> to using a tuple class, so it is dealt with on the stack istead of heap to make the program faster. 
+
+
+
+Shadows
+
+Ray tracer computes shadows by casting a ray, called a shadow ray. From each point of intersection toward the light source. If something intersects that shadow
+ray between the point and the light source, then the point is considered to be a shadow. 

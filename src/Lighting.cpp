@@ -1,7 +1,7 @@
 #include "Lighting.h"
 #include <cmath>
 
- Color Lighting::ProcessLighting(Material mat, LightShadeVector& lsv, const std::vector<double>& point) {
+ Color Lighting::ProcessLighting(Material mat, LightShadeVector& lsv, const std::vector<double>& point, bool in_shadow) {
 
      Color black(0, 0, 0);
         Color diffuse = black;
@@ -14,6 +14,10 @@
         lsv.CalculateLightVector(sceneLight.getPosition(), point);
 
         Color ambient = multiplyByScalar(effectiveColor, mat.ambient);
+        if (in_shadow) {
+            return ambient; 
+        }
+        
         double lightDotNorm = CalculateDotProd(lsv.L, lsv.N); 
         
         if (lightDotNorm >= 0.0) {

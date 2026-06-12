@@ -28,7 +28,29 @@ Intersections World::intersect_world(const Ray& ray) {
     return intersectionList; 
 }
 
+// Measure the distance from point to the light source by subtracting point from the light position, and take the magnitude of the resulting vector (distance)
+// Create a ray from point toward the light source by normalizing the vector from step 1
+// Intersect the World with that Ray
+// Check to see if there was a hit, and if so wether t is less than distance. If so, the hit lies between the point and the light source, and the point is in shadow. 
+bool World::is_shadowed(const vector<double>& pt) {
+    vector<double> v = SubtractTuples(lighting->getPos(), pt); 
+    double mag = GetMagnitude(v); // Distance
+    vector<double> dir = NormalizeTuple(v); 
 
+    Ray ray(pt, dir); 
+    Intersections ints; 
+    ints = intersect_world(ray); 
+
+   const Intersection* intersection = ints.hit(); 
+
+   if (intersection != nullptr && intersection->getT() < mag) {
+        return true; 
+   }
+
+   return false; 
+}
+
+// NEW: Implementing shading... We check if pt is a shadow or not, then pass it to process lighting
 Color World::shade_hit(const Computations& comps) {
     if (lighting == nullptr) {
         throw std::runtime_error("World has no lighting configured."); // Commented out, as lighting starts of null to get configured 
@@ -38,10 +60,12 @@ Color World::shade_hit(const Computations& comps) {
     lsv.E = comps.eyev;
     lsv.N = comps.normalv;
 
+
     return lighting->ProcessLighting(
         comps.object->getMaterial(),
         lsv,
-        comps.point
+        comps.point, 
+        is_shadowed(comps.overPt)
     );
 }
 

@@ -41,10 +41,8 @@ void Color_AtTest1(); // Passed
 void Color_atTest2(); // Passed
 void viewTransformTest(); // Passed
 void  rayPixelTest(); // Passed 
-*/ 
-void NormalOnTranslatedSphereTest();
-void NormalOnTransformedSphereTest();
-
-void MultiSpherereRender();
-
+void NormalOnTranslatedSphereTest();  // Passed
+void NormalOnTransformedSphereTest();  // Passed
+*/
+void MultiSpherereRender();  // Passed
 #endif

@@ -838,7 +838,7 @@ void  rayPixelTest() {
     r.printRay(); 
 }
 
-*/
+
 
 void NormalOnTranslatedSphereTest() {
     Sphere s;
@@ -877,7 +877,7 @@ void NormalOnTransformedSphereTest() {
         PrintTuple(n);
     }
 }
-
+*/
 void MultiSpherereRender() {
     Matrix m; // Identity Matrix initialized 
 

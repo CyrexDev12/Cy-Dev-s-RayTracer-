@@ -41,6 +41,7 @@ public:
 
     Intersections intersect_world(const Ray& ray); 
 
+    bool is_shadowed(const vector<double>& pt); 
 
     // hehe 
     Color shade_hit(const Computations& comps);
