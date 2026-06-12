@@ -2,7 +2,8 @@
 # Compiler settings
 # ==============================================================================
 CXX      := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -O2 -MMD -MP
+# Added -Isrc so paths resolve directly from the src directory root
+CXXFLAGS := -std=c++17 -Wall -Wextra -O2 -MMD -MP -Isrc
 
 # ==============================================================================
 # Directory layout
@@ -14,7 +15,8 @@ TARGET    := raytracer.exe
 # ==============================================================================
 # File tracking
 # ==============================================================================
-SRCS := $(wildcard $(SRC_DIR)/*.cpp)
+# Finds all .cpp files in src/ root AND all one-level-deep subdirectories
+SRCS := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
 OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
@@ -23,12 +25,12 @@ DEPS := $(OBJS:.o=.d)
 # MSYS2 defines MSYSTEM, normal Windows CMD/PowerShell usually does not.
 # ==============================================================================
 ifdef MSYSTEM
-	MKDIR_BUILD = mkdir -p $(BUILD_DIR)
+	MKDIR_P = mkdir -p
 	REMOVE_BUILD = rm -rf $(BUILD_DIR)
 	REMOVE_TARGET = rm -f $(TARGET)
 	RUN_TARGET = ./$(TARGET)
 else
-	MKDIR_BUILD = if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
+	MKDIR_P = powershell -Command New-Item -ItemType Directory -Force
 	REMOVE_BUILD = if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
 	REMOVE_TARGET = if exist $(TARGET) del /f /q $(TARGET)
 	RUN_TARGET = $(TARGET)
@@ -45,11 +47,10 @@ $(TARGET): $(OBJS)
 	@echo Linking executable: $@
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(BUILD_DIR):
-	$(MKDIR_BUILD)
-
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
+# This rule pattern automatically maps any source file path to the build folder
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo Compiling: $<
+	@$(MKDIR_P) $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: all

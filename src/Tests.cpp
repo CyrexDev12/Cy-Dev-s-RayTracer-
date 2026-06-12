@@ -2,17 +2,18 @@
 #define M_PI       3.14159265358979323846   // pi
 #include <cmath>
 #include <fstream>
-#include "Intersection.h"
-#include "Ray.h"
-#include "Sphere.h"
+#include "geometry/Intersection.h"
+#include "geometry/Ray.h"
+#include "geometry/Sphere.h"
 #include <cassert>
-#include "LightShadeVector.h"
-#include "Lighting.h"
-#include "PointLight.h"
-#include "World.h"
-#include "Computations.h"
-#include "Camera.h"|
-#include "Plane.h"
+#include "scene/LightShadeVector.h"
+#include "scene/Lighting.h"
+#include "scene/PointLight.h"
+#include "scene/World.h"
+#include "geometry/Computations.h"
+#include "scene/Camera.h"
+#include "geometry/Plane.h"
+
 using namespace std; 
 
 

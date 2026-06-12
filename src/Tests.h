@@ -1,11 +1,11 @@
 #ifndef TESTS_H
 #define TESTS_H
 #include <iostream>
-#include "Matrix.h"
-#include "Operations.h"
-#include "BasicPhysics.h"
-#include "canvas.h"
-#include "Ray.h"
+#include "math/Matrix.h"
+#include "math/Operations.h"
+#include "math/BasicPhysics.h"
+#include "scene/canvas.h"
+#include "geometry/Ray.h"
 // Testing header file
 // Includes all the methods to test our implementations 
 
