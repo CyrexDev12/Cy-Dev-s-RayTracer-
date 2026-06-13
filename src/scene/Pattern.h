@@ -7,6 +7,7 @@
 #include <cmath>
 
 // Current Patterns: Stripe, Checkers 
+// NOTE: Checkers cause issues, render distortion 
 
 class Shape; // FORWARD DECLERATION 
 

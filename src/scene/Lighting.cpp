@@ -1,6 +1,7 @@
 #include "scene/Lighting.h"
 #include <cmath>
 #include "scene/Material.h"
+#include "scene/Pattern.h"
 
  Color Lighting::ProcessLighting(const Shape* shape, Material mat, LightShadeVector& lsv, const std::vector<double>& point, bool in_shadow) {
     

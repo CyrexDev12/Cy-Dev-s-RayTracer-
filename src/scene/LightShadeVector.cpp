@@ -3,11 +3,9 @@
 
 
 // Negate the rays direction vector, turning it around to point back at its origin. 
- void LightShadeVector::CalculateEyeVector(const vector<double>& rayOrigin) {
-     vector<double> rawDog = NegateTuple(rayOrigin);
-
-     E = NormalizeTuple(rawDog); 
- }
+ void LightShadeVector::CalculateEyeVector(const vector<double>& rayDirection) {
+    E = NormalizeTuple(NegateTuple(rayDirection));
+}
 
  // Subtract p from the position of the light source, giving you the vector poiting toward the light. 
 void LightShadeVector::CalculateLightVector(const vector<double> lightPosition, const vector<double>& pointP) {

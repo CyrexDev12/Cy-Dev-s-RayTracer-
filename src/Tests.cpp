@@ -1024,86 +1024,90 @@ void PlaneRenderTest() {
     // Clean up memory
     delete world;
 }
-*/
+
 
 void PatternRenderTest() {
-    Matrix m; // Identity Matrix initialized 
+    Matrix m;
 
-    // 1. Setup a Point Light Source
-    // Positioned high up, slightly forward and to the left to cast good shadows
     PointLight light({-10.0, 10.0, -10.0, 1.0}, Color{1, 1, 1});
-    Lighting lighting(light); 
-    World* world = new World(lighting); 
+    Lighting lighting(light);
+    World* world = new World(lighting);
 
+    // 1. FLOOR WITH CHECKERS
+    Shape* floor = new Plane();
 
-    // 2. INFINITE FLOOR PLANE WITH CHECKERS
-    Shape* floor = new Plane(); 
-    // Create a sharp black and white checkerboard pattern
     std::shared_ptr<Pattern> floorCheckers = std::make_shared<CheckersPattern>(
-        Color{0.1, 0.1, 0.1}, // Dark charcoal squares
-        Color{0.9, 0.9, 0.9}  // Crisp white squares
+        Color{0.1, 0.1, 0.1},
+        Color{0.9, 0.9, 0.9}
     );
-    // Optional: scale the pattern up so the squares aren't tiny unit blocks
-    floorCheckers->transform = m.scale(2.0, 2.0, 2.0); 
-    
-    floor->setMaterialPattern(*floorCheckers); // Sends a copy of it over 
-    floor->setAmbient(0.1); 
-    floor->setDiffuse(0.7); 
-    floor->setSpecular(0.1); 
+
+    floorCheckers->transform = m.scale(2.0, 2.0, 2.0);
+
+    floor->setMaterialPattern(*floorCheckers);
+    floor->setAmbient(0.1);
+    floor->setDiffuse(0.7);
+    floor->setSpecular(0.1);
+
     world->AddShape(floor);
 
-    // 3. BACKGROUND WALL WITH STRIPES
+    // 2. BACK WALL WITH STRIPES
     Shape* backWall = new Plane();
+
     Matrix wallTrans = m.translation(0, 0, 5);
-    Matrix wallRotX = m.rotateX(M_PI / 2); // Tilt up into a vertical wall
+    Matrix wallRotX = m.rotateX(M_PI / 2);
     backWall->setTransform(wallTrans.multiplyMatrix(wallRotX));
-    
-    // Create a vibrant red and yellow stripe pattern
+
     std::shared_ptr<Pattern> wallStripes = std::make_shared<StripePattern>(
-        Color{0.8, 0.1, 0.1}, // Deep red
-        Color{0.9, 0.8, 0.1}  // Warm yellow
+        Color{0.8, 0.1, 0.1},
+        Color{0.9, 0.8, 0.1}
     );
-    // Optional: compress the stripes along the x axis to make them thinner
+
     wallStripes->transform = m.scale(0.5, 1.0, 1.0);
 
-    backWall->setMaterialPattern(*wallStripes); 
-    backWall->setAmbient(0.1); 
-    backWall->setDiffuse(0.8); 
-    backWall->setSpecular(0.0); 
+    backWall->setMaterialPattern(*wallStripes);
+    backWall->setAmbient(0.1);
+    backWall->setDiffuse(0.8);
+    backWall->setSpecular(0.0);
+
     world->AddShape(backWall);
 
-    // 4. FLOATING CHECKERED SPHERE
-    Shape* middleSphere = new Sphere(); 
-    middleSphere->setTransform(m.translation(0, 1.5, 1)); 
-    
-    // Green and blue 3D checkers wrapped onto a sphere!
-    std::shared_ptr<Pattern> sphereCheckers = std::make_shared<CheckersPattern>(
-        Color{0.1, 0.8, 0.2}, // Bright green
-        Color{0.1, 0.2, 0.8}  // Rich blue
-    );
-    // Scale down the checker pattern size so it wraps around the sphere nicely
-    sphereCheckers->transform = m.scale(0.25, 0.25, 0.25);
+    // 3. SPHERE WITH STRIPES
+    Shape* middleSphere = new Sphere();
 
-    middleSphere->setMaterialPattern(*sphereCheckers); 
+    middleSphere->setTransform(m.translation(0, 1.5, 1));
+
+    std::shared_ptr<Pattern> sphereStripes = std::make_shared<StripePattern>(
+        Color{0.1, 0.8, 0.2},
+        Color{0.1, 0.2, 0.8}
+    );
+
+    // Start with identity scale for debugging.
+    // Smaller than 1 = more stripes.
+    // Larger than 1 = fewer/wider stripes.
+    sphereStripes->transform = m.scale(1.0, 1.0, 1.0);
+
+    middleSphere->setMaterialPattern(*sphereStripes);
     middleSphere->setAmbient(0.1);
-    middleSphere->setDiffuse(0.8); 
-    middleSphere->setSpecular(0.5); 
-    middleSphere->setShininess(200); 
+    middleSphere->setDiffuse(0.8);
+    middleSphere->setSpecular(0.2);
+    middleSphere->setShininess(100);
+
     world->AddShape(middleSphere);
 
-    // 5. CAMERA CONFIGURATION
-    // 200x100 resolution gives a great balance between quick processing and crisp texture details
-    Camera cam(200, 100, M_PI / 3); 
-    std::vector<double> from = {0.0, 2.5, -5.0, 1.0}; // Slightly higher camera angle to view the floor grid
-    std::vector<double> to   = {0.0, 1.0,  0.0, 1.0};  
-    std::vector<double> up   = {0.0, 1.0,  0.0, 0.0}; 
-    Matrix viewTrans = m.viewTransformation(from, to, up); 
+    // 4. CAMERA
+    Camera cam(200, 100, M_PI / 3);
+
+    std::vector<double> from = {0.0, 2.5, -5.0, 1.0};
+    std::vector<double> to   = {0.0, 1.0,  0.0, 1.0};
+    std::vector<double> up   = {0.0, 1.0,  0.0, 0.0};
+
+    Matrix viewTrans = m.viewTransformation(from, to, up);
     cam.setTransformM(viewTrans);
 
-    // 6. Execution and Frame Flush
     Canvas canvas = render(cam, *world);
-    canvas.canvasOut(); 
+    canvas.canvasOut();
 
-    // Clean up top-level allocated shapes
     delete world;
 }
+
+*/
