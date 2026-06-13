@@ -45,7 +45,8 @@ void NormalOnTranslatedSphereTest();  // Passed
 void NormalOnTransformedSphereTest();  // Passed
 void MultiSpherereRender();  // Passed
 void PlaneRenderTest(); // Passed 
-void PatternRenderTest(); // Passed
 */
+void PatternRenderTest(); // Passed
+
 
 #endif
