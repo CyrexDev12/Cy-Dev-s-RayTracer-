@@ -112,3 +112,7 @@ Plane
 
 Patterns 
 A pattern is a function that accepts a point in space and returns a color. 
+
+
+To create better Render
+- Update resolution usually (800, 400) is high resolution, (200, 100) is low resolution for the camera 

@@ -1024,7 +1024,7 @@ void PlaneRenderTest() {
     // Clean up memory
     delete world;
 }
-
+*/
 
 void PatternRenderTest() {
     Matrix m;
@@ -1095,7 +1095,7 @@ void PatternRenderTest() {
     world->AddShape(middleSphere);
 
     // 4. CAMERA
-    Camera cam(200, 100, M_PI / 3);
+    Camera cam(800, 400, M_PI / 3);
 
     std::vector<double> from = {0.0, 2.5, -5.0, 1.0};
     std::vector<double> to   = {0.0, 1.0,  0.0, 1.0};
@@ -1110,4 +1110,3 @@ void PatternRenderTest() {
     delete world;
 }
 
-*/

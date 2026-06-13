@@ -88,25 +88,59 @@ Ray ray_for_pixel(Camera cam, double x, double y) {
     return Ray(origin, direction); 
 }
 
+std::string dashes(int count) {
+    return std::string(count, '-');
+}
+
+std::string GreenHashes(int count) {
+    return "\033[32m" + std::string(count, '#') + "\033[0m";
+}
+
+void updateProgress(int completedSlots) {
+    const int maxSlots = 20;
+
+    double percentage = (static_cast<double>(completedSlots) / maxSlots) * 100.0;
+
+    std::cout << "\r"
+              << GreenHashes(completedSlots)
+              << dashes(maxSlots - completedSlots)
+              << " (" << static_cast<int>(percentage) << "%)"
+              << std::flush;
+}
+
 // Params; Camera, world
 // Renders the canvas  
+// NEW: Added a percentage completion timer for render
 Canvas render(Camera cam, World& world) {
-    int width = cam.gethSize(); 
+    int width = cam.gethSize();
     int height = cam.getvSize();
 
-    Canvas canvas(width, height); 
+    Canvas canvas(width, height);
+
+    int totalPixels = canvas.width * canvas.height;
+    int pixCount = 0;
+
+    int maxSlots = 20;
+    int lastSlots = -1;
 
     for (int y = 0; y < canvas.height; y++) {
-
         for (int x = 0; x < canvas.width; x++) {
             Ray r = ray_for_pixel(cam, x, y);
             Color c = world.Color_at(r);
-            canvas.writePixel(x, y, c); 
-        }
+            canvas.writePixel(x, y, c);
 
+            pixCount++;
+
+            int completedSlots = (pixCount * maxSlots) / totalPixels;
+
+            if (completedSlots != lastSlots) {
+                updateProgress(completedSlots);
+                lastSlots = completedSlots;
+            }
+        }
     }
 
-    // Make and return image class here 
-    return canvas; 
-    
+    std::cout << std::endl;
+
+    return canvas;
 }
