@@ -62,6 +62,7 @@ Color World::shade_hit(const Computations& comps) {
 
 
     return lighting->ProcessLighting(
+        comps.object,
         comps.object->getMaterial(),
         lsv,
         comps.point, 

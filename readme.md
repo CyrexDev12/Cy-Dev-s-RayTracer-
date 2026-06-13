@@ -109,3 +109,6 @@ Base class Shape* is an abstract class that handles generic operations like tran
 Plane
 - Normal is always straight up at (0, 1, 0)
 - Local Intersect: If the ray is parallel to the plane (ray.direction.y is close to 0), it misses completeley. Otherwise, t = -rayorigin.y  ray.direction.y 
+
+Patterns 
+A pattern is a function that accepts a point in space and returns a color. 

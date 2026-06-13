@@ -5,9 +5,12 @@
 #include <vector>
 #include <stdexcept>
 #include "geometry/Ray.h"
-#include "scene/Material.h"
-#include "math/Matrix.h" // Assuming Matrix is defined here
+#include "scene/Material.h" 
+#include "math/Matrix.h" 
 #include "geometry/Intersection.h"
+
+// 1. FORWARD DECLARATION 
+class Pattern; 
 
 class Shape {
 protected:
@@ -18,10 +21,8 @@ protected:
 public:
     virtual ~Shape() = default;
 
-    // Pure virtual function: Every shape must implement its own math
     virtual void intersect(Ray ray, Intersections& intersectionsList) = 0;
-
-    virtual vector<double> normal_at(const vector<double>& worldPoint) const = 0;
+    virtual std::vector<double> normal_at(const std::vector<double>& worldPoint) const = 0; // Fixed missing std::
 
     // --- Common Getters & Setters ---
     Matrix getTransform() const { return transformMatrix; }
@@ -52,6 +53,11 @@ public:
     void setShininess(double num) {
         if (num < 10.0 || num > 200.0) throw std::invalid_argument("Must be a value between 10-200!");
         material.shininess = num; 
+    }
+
+    // Pass pattern by reference, stores its address cleanly
+    void setMaterialPattern(Pattern& pat) {
+        material.pattern = &pat; 
     }
 };
 

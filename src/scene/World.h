@@ -15,6 +15,9 @@ private:
 public: 
     // Default constructor
     World();
+    World(Lighting& ling) {
+        lighting = &ling; 
+    }
 
     // DESTRUCTOR: Cleans up heap memory allocated for shapes
     ~World() {
@@ -35,7 +38,7 @@ public:
         shapesList.push_back(shape);
     }
 
-    void addLighting(Lighting& ling) {
+    void setLighting(Lighting& ling) {
         lighting = &ling; 
     }
 

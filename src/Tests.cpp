@@ -2,6 +2,7 @@
 #define M_PI       3.14159265358979323846   // pi
 #include <cmath>
 #include <fstream>
+#include <memory>
 #include "geometry/Intersection.h"
 #include "geometry/Ray.h"
 #include "geometry/Sphere.h"
@@ -13,6 +14,7 @@
 #include "geometry/Computations.h"
 #include "scene/Camera.h"
 #include "geometry/Plane.h"
+#include "scene/Pattern.h"
 
 using namespace std; 
 
@@ -964,7 +966,6 @@ void MultiSpherereRender() {
     delete world;
 
 }
-*/
 
 
 void PlaneRenderTest() {
@@ -1023,3 +1024,90 @@ void PlaneRenderTest() {
     // Clean up memory
     delete world;
 }
+
+
+void PatternRenderTest() {
+    Matrix m;
+
+    PointLight light({-10.0, 10.0, -10.0, 1.0}, Color{1, 1, 1});
+    Lighting lighting(light);
+    World* world = new World(lighting);
+
+    // 1. FLOOR WITH CHECKERS
+    Shape* floor = new Plane();
+
+    std::shared_ptr<Pattern> floorCheckers = std::make_shared<CheckersPattern>(
+        Color{0.1, 0.1, 0.1},
+        Color{0.9, 0.9, 0.9}
+    );
+
+    floorCheckers->transform = m.scale(2.0, 2.0, 2.0);
+
+    floor->setMaterialPattern(*floorCheckers);
+    floor->setAmbient(0.1);
+    floor->setDiffuse(0.7);
+    floor->setSpecular(0.1);
+
+    world->AddShape(floor);
+
+    // 2. BACK WALL WITH STRIPES
+    Shape* backWall = new Plane();
+
+    Matrix wallTrans = m.translation(0, 0, 5);
+    Matrix wallRotX = m.rotateX(M_PI / 2);
+    backWall->setTransform(wallTrans.multiplyMatrix(wallRotX));
+
+    std::shared_ptr<Pattern> wallStripes = std::make_shared<StripePattern>(
+        Color{0.8, 0.1, 0.1},
+        Color{0.9, 0.8, 0.1}
+    );
+
+    wallStripes->transform = m.scale(0.5, 1.0, 1.0);
+
+    backWall->setMaterialPattern(*wallStripes);
+    backWall->setAmbient(0.1);
+    backWall->setDiffuse(0.8);
+    backWall->setSpecular(0.0);
+
+    world->AddShape(backWall);
+
+    // 3. SPHERE WITH STRIPES
+    Shape* middleSphere = new Sphere();
+
+    middleSphere->setTransform(m.translation(0, 1.5, 1));
+
+    std::shared_ptr<Pattern> sphereStripes = std::make_shared<StripePattern>(
+        Color{0.1, 0.8, 0.2},
+        Color{0.1, 0.2, 0.8}
+    );
+
+    // Start with identity scale for debugging.
+    // Smaller than 1 = more stripes.
+    // Larger than 1 = fewer/wider stripes.
+    sphereStripes->transform = m.scale(1.0, 1.0, 1.0);
+
+    middleSphere->setMaterialPattern(*sphereStripes);
+    middleSphere->setAmbient(0.1);
+    middleSphere->setDiffuse(0.8);
+    middleSphere->setSpecular(0.2);
+    middleSphere->setShininess(100);
+
+    world->AddShape(middleSphere);
+
+    // 4. CAMERA
+    Camera cam(200, 100, M_PI / 3);
+
+    std::vector<double> from = {0.0, 2.5, -5.0, 1.0};
+    std::vector<double> to   = {0.0, 1.0,  0.0, 1.0};
+    std::vector<double> up   = {0.0, 1.0,  0.0, 0.0};
+
+    Matrix viewTrans = m.viewTransformation(from, to, up);
+    cam.setTransformM(viewTrans);
+
+    Canvas canvas = render(cam, *world);
+    canvas.canvasOut();
+
+    delete world;
+}
+
+*/
